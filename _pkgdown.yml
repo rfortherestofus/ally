@@ -1,0 +1,33 @@
+url: https://rfortherestofus.github.io/ally/
+
+template:
+  bootstrap: 5
+  bootswatch: flatly
+
+home:
+  title: ally — R-native tooling for AI coding assistants
+  description: >
+    Companion package to Ally, a subscription product from R for the Rest of
+    Us aimed at advanced R users navigating the AI transition.
+
+navbar:
+  structure:
+    left:  [intro, reference, articles, news]
+    right: [search, github]
+
+reference:
+  - title: Skill installation
+    desc: Install, update, and remove agent skills.
+    contents:
+      - install_skill
+      - update_skill
+      - remove_skill
+      - link_skills
+      - installed_skills
+  - title: Supported agents
+    desc: Introspect the agents that ally installs skills for.
+    contents:
+      - supported_agents
+
+development:
+  mode: auto
