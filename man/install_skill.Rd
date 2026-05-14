@@ -7,9 +7,17 @@
 install_skill(source, copy = FALSE)
 }
 \arguments{
-\item{source}{A GitHub shorthand of the form \code{owner/repo/path/to/skill}
-(optionally \verb{@ref} for a branch/tag/sha) or a local filesystem path to a
-skill directory.}
+\item{source}{One of:
+\itemize{
+\item GitHub shorthand \code{owner/repo/path/to/skill} (optionally \verb{@ref} for a
+branch/tag/sha)
+\item A full GitHub URL, e.g.
+\verb{https://github.com/owner/repo/tree/main/path/to/skill} (URLs ending
+in \verb{/SKILL.md} are accepted; the parent directory is used). Refs
+containing \code{/} (e.g. \code{release/v1}) cannot be disambiguated from a
+URL — use the shorthand \code{owner/repo/path@release/v1} instead.
+\item A local filesystem path to a skill directory
+}}
 
 \item{copy}{If \code{TRUE}, copy the skill into agent folders instead of
 symlinking. Symlinks are tried first when \code{FALSE}; this only forces the
@@ -27,7 +35,15 @@ needed for Codex.
 }
 \examples{
 \dontrun{
+# GitHub shorthand
 install_skill("ab604/claude-code-r-skills/.claude/skills/r-style-guide")
+
+# Full GitHub URL (also works with the SKILL.md link)
+install_skill(
+  "https://github.com/posit-dev/skills/tree/main/posit-dev/critical-code-reviewer"
+)
+
+# Local path
 install_skill("~/my-skills/r-style-guide")
 }
 }

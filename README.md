@@ -55,6 +55,15 @@ copying with `copy = TRUE`.
 install_skill("ab604/claude-code-r-skills/.claude/skills/r-style-guide")
 install_skill("owner/repo/skills/my-skill@dev")
 
+# Full GitHub URL — paste it straight from the browser
+install_skill(
+  "https://github.com/posit-dev/skills/tree/main/posit-dev/critical-code-reviewer"
+)
+# URLs ending in /SKILL.md also work (the parent dir is used)
+install_skill(
+  "https://github.com/posit-dev/skills/blob/main/posit-dev/critical-code-reviewer/SKILL.md"
+)
+
 # Local path — handy for skill development
 install_skill("~/my-skills/r-style-guide")
 ```

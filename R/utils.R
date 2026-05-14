@@ -15,6 +15,10 @@ agent_skills_dir <- function(agent, root = getwd()) {
 parse_source <- function(source) {
   source <- trimws(source)
 
+  if (grepl("^https?://github\\.com/", source, ignore.case = TRUE)) {
+    return(parse_github_url(source))
+  }
+
   is_local <- startsWith(source, "/") ||
     startsWith(source, "~") ||
     startsWith(source, ".") ||
@@ -43,8 +47,18 @@ parse_source <- function(source) {
   if (length(parts) < 3 || any(nchar(parts) == 0)) {
     cli::cli_abort(c(
       "Invalid source {.val {source}}.",
-      "i" = "Expected GitHub shorthand {.val owner/repo/skill-name} or a local path."
+      "i" = "Expected GitHub shorthand {.val owner/repo/skill-name}, a GitHub URL, or a local path."
     ))
+  }
+
+  if (parts[length(parts)] == "SKILL.md") {
+    if (length(parts) < 4) {
+      cli::cli_abort(c(
+        "Invalid source {.val {source}}.",
+        "i" = "Point at the skill {.emph directory}, not its {.file SKILL.md}."
+      ))
+    }
+    parts <- parts[-length(parts)]
   }
 
   list(
@@ -54,6 +68,61 @@ parse_source <- function(source) {
     path = paste(parts[-(1:2)], collapse = "/"),
     ref = ref,
     skill_name = parts[length(parts)]
+  )
+}
+
+#' @keywords internal
+#' @noRd
+parse_github_url <- function(url) {
+  url <- trimws(url)
+  original <- url
+  url <- sub("^https?://github\\.com/", "", url, ignore.case = TRUE)
+  url <- sub("\\?.*$", "", url)
+  url <- sub("#.*$", "", url)
+  url <- sub("/+$", "", url)
+
+  parts <- strsplit(url, "/", fixed = TRUE)[[1]]
+  parts <- parts[nzchar(parts)]
+
+  if (length(parts) < 2) {
+    cli::cli_abort(c(
+      "Invalid GitHub URL {.val {original}}.",
+      "i" = "Expected {.val https://github.com/owner/repo/tree/<ref>/path/to/skill}."
+    ))
+  }
+
+  owner <- parts[1]
+  repo <- sub("\\.git$", "", parts[2])
+
+  if (length(parts) < 5 || !(parts[3] %in% c("blob", "tree"))) {
+    cli::cli_abort(c(
+      "GitHub URL {.val {original}} is missing the path to a skill directory.",
+      "i" = "Expected {.val https://github.com/owner/repo/tree/<ref>/path/to/skill}."
+    ))
+  }
+
+  ref <- parts[4]
+  path_parts <- parts[-(1:4)]
+
+  if (length(path_parts) > 0 &&
+        path_parts[length(path_parts)] == "SKILL.md") {
+    path_parts <- path_parts[-length(path_parts)]
+  }
+
+  if (length(path_parts) == 0) {
+    cli::cli_abort(c(
+      "Invalid GitHub URL {.val {original}}.",
+      "i" = "Point at the skill {.emph directory}, not its {.file SKILL.md} or the ref root."
+    ))
+  }
+
+  list(
+    type = "github",
+    owner = owner,
+    repo = repo,
+    path = paste(path_parts, collapse = "/"),
+    ref = ref,
+    skill_name = path_parts[length(path_parts)]
   )
 }
 
