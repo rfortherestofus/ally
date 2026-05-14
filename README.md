@@ -88,6 +88,8 @@ install from a private repo, set `GITHUB_PAT` in your `.Renviron`:
 GITHUB_PAT=your_token_here
 ```
 
+You can create a GITHUB_PAT using `usethis::create_github_token()`. 
+
 ## Code of Conduct
 
 Please note that the {ally} project is released with a
