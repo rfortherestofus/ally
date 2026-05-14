@@ -1,4 +1,4 @@
-# ally <a href="https://rfortherestofus.github.io/ally/"><img src="man/figures/logo.png" align="right" height="120" alt="ally hex sticker" /></a>
+# ally
 
 <!-- badges: start -->
 <!-- badges: end -->
