@@ -4,7 +4,7 @@
 \alias{install_skill}
 \title{Install an AI coding assistant skill}
 \usage{
-install_skill(source, scope = c("project", "user"), copy = FALSE)
+install_skill(source, scope = c("project", "user"), link = FALSE)
 }
 \arguments{
 \item{source}{One of:
@@ -23,18 +23,20 @@ branch, tag or commit), or just \code{owner/repo} for a top-level skill.
 \item{scope}{\code{"project"} installs into the current working directory,
 \code{"user"} into your home folder.}
 
-\item{copy}{If \code{TRUE}, copy the skill into agent folders instead of
-linking. Links are tried first when \code{FALSE}; this only forces the
-fallback up front (useful on Windows without developer mode).}
+\item{link}{If \code{TRUE}, put a relative symbolic link in each agent folder
+pointing at the \code{.agents/skills} copy instead of a second copy, so there is a
+single set of files to edit. Falls back to copying where links can't be
+created (typically Windows without developer mode). The default, \code{FALSE},
+copies.}
 }
 \value{
 Invisibly, a list describing the install.
 }
 \description{
 Downloads (or copies) a skill into \verb{.agents/skills/<skill-name>/}, the shared folder
-that Codex and other agents read directly, and links it into \verb{.claude/skills/<skill-name>}
-so Claude Code sees the same copy. With \code{scope = "project"} (the default) both folders
-sit in the current working directory and the skill travels with the project. With
+that Codex and other agents read directly, and into \verb{.claude/skills/<skill-name>/}
+for Claude Code. With \code{scope = "project"} (the default) both folders sit in the
+current working directory and the skill travels with the project. With
 \code{scope = "user"} they sit in your home folder and every project on the computer can
 use the skill.
 }

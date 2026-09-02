@@ -29,13 +29,12 @@ ally::install_skill(
 )
 #> ✔ Installed "r-cli-app" to .agents/skills/r-cli-app
 #> ℹ Codex and other agents read .agents/skills/ directly.
-#> ✔ Linked to "Claude Code" (.claude/skills)
+#> ✔ Copied to "Claude Code" (.claude/skills)
 ```
 
-The skill lives in a single canonical location, `.agents/skills/<skill>`,
-which Codex and a growing number of agents read directly. Claude Code looks
-in `.claude/skills/`, so {ally} creates a relative symlink there pointing
-back to the canonical copy.
+The skill is installed in two places: `.agents/skills/<skill>`, which Codex
+and a growing number of agents read directly, and `.claude/skills/<skill>`
+for Claude Code. Nothing else to configure.
 
 ## This project or every project
 
@@ -47,21 +46,22 @@ folder instead, where every project on the computer can use it:
 ally::install_skill("posit-dev/skills/r-lib/r-cli-app", scope = "user")
 #> ✔ Installed "r-cli-app" to ~/.agents/skills/r-cli-app
 #> ℹ Every project on this computer can use skills in ~/.agents/skills/.
-#> ✔ Linked to "Claude Code" (~/.claude/skills)
+#> ✔ Copied to "Claude Code" (~/.claude/skills)
 ```
 
 ## How it works
 
 | Path | What it is |
 |---|---|
-| `.agents/skills/<skill>/` | Real directory, the canonical copy. Codex reads it directly. |
-| `.claude/skills/<skill>` | Relative symlink to `../../.agents/skills/<skill>`, so Claude Code sees the same content. |
+| `.agents/skills/<skill>/` | The canonical copy. Codex and other agents read it directly. |
+| `.claude/skills/<skill>/` | A second copy for Claude Code. |
 
 With `scope = "user"` the same two folders sit in your home directory.
 
-If symlinks aren't supported (typically Windows without developer mode),
-{ally} falls back to copying and tells you it did so. You can also force
-copying with `copy = TRUE`.
+Prefer a single set of files? Pass `link = TRUE` and {ally} puts a relative
+symlink at `.claude/skills/<skill>` pointing back to the canonical copy
+instead of a second copy. Where symlinks aren't supported (typically Windows
+without developer mode) it falls back to copying and tells you so.
 
 Skills are fetched from the repository's zip archive on GitHub: a single
 download that needs no token and never counts against the GitHub API rate
@@ -95,9 +95,9 @@ install_skill("~/my-skills/r-style-guide")
 ```r
 installed_skills()                # list everything in .agents/skills/
 update_skill("r-style-guide")     # re-fetch from the original source
-link_skills()                     # re-create the Claude symlinks
-remove_skill("r-style-guide")     # delete canonical copy + Claude symlink
-supported_agents()                # introspect agents that need a symlink
+link_skills()                     # refresh the Claude Code copies
+remove_skill("r-style-guide")     # delete canonical copy + Claude copy
+supported_agents()                # introspect agents that get their own copy
 ```
 
 Every one of these takes the same `scope` argument as `install_skill()`.

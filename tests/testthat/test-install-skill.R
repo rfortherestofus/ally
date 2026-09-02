@@ -8,7 +8,7 @@ make_local_skill <- function(name = "demo-skill") {
   skill
 }
 
-test_that("install_skill creates canonical copy and Claude symlink", {
+test_that("install_skill creates canonical copy and a Claude Code copy", {
   proj <- withr::local_tempdir()
   withr::local_dir(proj)
 
@@ -19,8 +19,9 @@ test_that("install_skill creates canonical copy and Claude symlink", {
   expect_true(fs::file_exists(".agents/skills/demo-skill/examples/one.md"))
   expect_true(fs::file_exists(".agents/skills/demo-skill/.ally-source.json"))
 
-  expect_true(fs::link_exists(".claude/skills/demo-skill") ||
-                fs::dir_exists(".claude/skills/demo-skill"))
+  expect_false(fs::link_exists(".claude/skills/demo-skill"))
+  expect_true(fs::file_exists(".claude/skills/demo-skill/SKILL.md"))
+  expect_equal(res$links$claude$mode, "copy")
 
   expect_equal(res$skill, "demo-skill")
   expect_equal(names(res$links), "claude")
@@ -57,17 +58,17 @@ test_that("installed_skills lists skills under .agents/skills/", {
   expect_setequal(installed_skills(), c("alpha", "beta"))
 })
 
-test_that("link_skills re-links every installed skill for Claude", {
+test_that("link_skills refreshes the Claude Code copy of every installed skill", {
   proj <- withr::local_tempdir()
   withr::local_dir(proj)
 
   install_skill(make_local_skill("synced"))
-  fs::link_delete(".claude/skills/synced")
+  writeLines("# edited", ".agents/skills/synced/SKILL.md")
+  fs::dir_delete(".claude/skills/synced")
 
   link_skills()
 
-  expect_true(fs::link_exists(".claude/skills/synced") ||
-                fs::dir_exists(".claude/skills/synced"))
+  expect_equal(readLines(".claude/skills/synced/SKILL.md"), "# edited")
 })
 
 test_that("remove_skill cleans up canonical copy and Claude symlink", {
@@ -98,15 +99,16 @@ test_that("update_skill re-runs install from recorded source", {
   )
 })
 
-test_that("install_skill with copy = TRUE copies the Claude folder", {
+test_that("install_skill with link = TRUE links the Claude folder where it can", {
   proj <- withr::local_tempdir()
   withr::local_dir(proj)
 
-  install_skill(make_local_skill("copy-me"), copy = TRUE)
+  res <- install_skill(make_local_skill("link-me"), link = TRUE)
+  skip_if_not(res$links$claude$mode == "symlink", "symlinks unavailable here")
 
-  expect_false(fs::link_exists(".claude/skills/copy-me"))
-  expect_true(fs::dir_exists(".claude/skills/copy-me"))
-  expect_true(fs::file_exists(".claude/skills/copy-me/SKILL.md"))
+  expect_true(fs::link_exists(".claude/skills/link-me"))
+  expect_equal(as.character(fs::link_path(".claude/skills/link-me")), "../../.agents/skills/link-me")
+  expect_true(fs::file_exists(".claude/skills/link-me/SKILL.md"))
 })
 
 test_that("install_skill refuses a folder without a SKILL.md", {
@@ -137,7 +139,7 @@ test_that("scope = 'user' installs under the home folder, not the project", {
 
   remove_skill("everywhere", scope = "user")
   expect_false(fs::dir_exists(fs::path(home, ".agents/skills/everywhere")))
-  expect_false(fs::link_exists(fs::path(home, ".claude/skills/everywhere")))
+  expect_false(fs::dir_exists(fs::path(home, ".claude/skills/everywhere")))
 })
 
 test_that("supported_agents lists Claude Code only (Codex is native)", {

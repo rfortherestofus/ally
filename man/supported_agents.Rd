@@ -12,7 +12,7 @@ A named list of agent definitions.
 \description{
 \code{ally} stores skills at \verb{.agents/skills/<skill>}, the shared folder that Codex and a
 growing number of agents read directly. Agents that only read their own folder get a
-link there pointing back to the canonical copy. This list enumerates those agents.
+copy there (or a link with \code{link = TRUE}). This list enumerates those agents.
 The folder is relative to the scope root: the project for \code{scope = "project"}, the
 home folder for \code{scope = "user"}.
 }

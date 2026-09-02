@@ -1,9 +1,9 @@
 #' Install an AI coding assistant skill
 #'
 #' Downloads (or copies) a skill into `.agents/skills/<skill-name>/`, the shared folder
-#' that Codex and other agents read directly, and links it into `.claude/skills/<skill-name>`
-#' so Claude Code sees the same copy. With `scope = "project"` (the default) both folders
-#' sit in the current working directory and the skill travels with the project. With
+#' that Codex and other agents read directly, and into `.claude/skills/<skill-name>/`
+#' for Claude Code. With `scope = "project"` (the default) both folders sit in the
+#' current working directory and the skill travels with the project. With
 #' `scope = "user"` they sit in your home folder and every project on the computer can
 #' use the skill.
 #'
@@ -22,9 +22,11 @@
 #'   * A local filesystem path to a skill directory.
 #' @param scope `"project"` installs into the current working directory,
 #'   `"user"` into your home folder.
-#' @param copy   If `TRUE`, copy the skill into agent folders instead of
-#'   linking. Links are tried first when `FALSE`; this only forces the
-#'   fallback up front (useful on Windows without developer mode).
+#' @param link   If `TRUE`, put a relative symbolic link in each agent folder
+#'   pointing at the `.agents/skills` copy instead of a second copy, so there is a
+#'   single set of files to edit. Falls back to copying where links can't be
+#'   created (typically Windows without developer mode). The default, `FALSE`,
+#'   copies.
 #'
 #' @return Invisibly, a list describing the install.
 #' @export
@@ -42,7 +44,7 @@
 #' # Local path
 #' install_skill("~/my-skills/r-style-guide")
 #' }
-install_skill <- function(source, scope = c("project", "user"), copy = FALSE) {
+install_skill <- function(source, scope = c("project", "user"), link = FALSE) {
   scope <- match.arg(scope)
   parsed <- parse_source(source)
   skill_name <- parsed$skill_name
@@ -85,7 +87,7 @@ install_skill <- function(source, scope = c("project", "user"), copy = FALSE) {
     skill_dir = skill_dir,
     skill_name = skill_name,
     root = root,
-    copy = copy
+    link = link
   )
 
   invisible(list(
@@ -121,14 +123,14 @@ fetch_skill <- function(parsed, dest) {
 link_skill_to_agents <- function(skill_dir,
                                  skill_name,
                                  root = getwd(),
-                                 copy = FALSE) {
+                                 link = FALSE) {
   results <- list()
 
   for (agent in supported_agents()) {
     agent_dir <- agent_skills_dir(agent, root = root)
     link_path <- fs::path(agent_dir, skill_name)
 
-    res <- link_or_copy(skill_dir, link_path, force_copy = copy)
+    res <- link_or_copy(skill_dir, link_path, force_copy = !link)
 
     cli::cli_alert_success(
       "{if (res$mode == 'symlink') 'Linked' else 'Copied'} to {.val {agent$name}} ({.path {pretty_path(agent_dir)}})"
