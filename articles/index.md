@@ -2,5 +2,5 @@
 
 ### All vignettes
 
-- [Get started with
-  ally](https://rfortherestofus.github.io/ally/articles/ally.md):
+- [Working with
+  skills](https://rfortherestofus.github.io/ally/articles/skills.md):
