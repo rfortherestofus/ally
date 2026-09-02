@@ -1,0 +1,250 @@
+/*
+ * Ally theme for the pkgdown site.
+ *
+ * Mirrors the design of rfortherestofus.com/ally: Open Runde for display
+ * text, Inter for body copy, Roboto Mono for small labels, a navy and violet
+ * palette, and a soft blue-to-violet wash behind the top of each page.
+ * Inter and Roboto Mono are bundled by bslib (see _pkgdown.yml). Open Runde
+ * is self-hosted from fonts/ under the SIL Open Font License.
+ */
+
+@font-face {
+  font-family: "Open Runde";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/open-runde-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Open Runde";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("fonts/open-runde-latin-500-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Open Runde";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fonts/open-runde-latin-600-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Open Runde";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/open-runde-latin-700-normal.woff2") format("woff2");
+}
+
+:root {
+  --ally-navy-800: #132c58;
+  --ally-navy-900: #0a172d;
+  --ally-blue-100: #e3eefb;
+  --ally-blue-400: #449ce1;
+  --ally-violet-50: #f5f3fb;
+  --ally-violet-100: #eae6f7;
+  --ally-violet-200: #c7bbfa;
+  --ally-violet-300: #a48ff7;
+  --ally-violet-600: #552fef;
+  --ally-violet-700: #4522d4;
+  --ally-gray-50: #f8fafc;
+  --ally-gray-100: #f1f5f9;
+  --ally-gray-200: #e2e8f0;
+  --ally-gray-500: #64748b;
+  --ally-gray-600: #475569;
+  --ally-display: "Open Runde", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --ally-mono: "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* Page ground: white with the Ally hero wash fading out below the navbar. */
+body {
+  color: var(--ally-navy-900);
+  background-color: #fff;
+  background-image:
+    radial-gradient(55% 520px at 30% 0, rgba(68, 156, 225, 0.22), transparent 70%),
+    radial-gradient(45% 460px at 78% 0, rgba(85, 47, 239, 0.16), transparent 70%);
+  background-repeat: no-repeat;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Display type */
+h1, h2, h3, h4, h5, h6,
+.navbar-brand {
+  font-family: var(--ally-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ally-navy-900);
+}
+
+/* The wordmark: "ALLY" in violet with "AI" laid over it in brand blue, as on the Ally badge. */
+.navbar-brand,
+.template-home .page-header h1 {
+  position: relative;
+  display: inline-block;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--ally-violet-600);
+}
+.navbar-brand::before,
+.template-home .page-header h1::before {
+  content: "AI";
+  position: absolute;
+  inset: 0;
+  padding: inherit;
+  color: var(--ally-blue-400);
+  pointer-events: none;
+}
+.navbar-brand {
+  font-size: 1.5rem;
+}
+.navbar-brand:hover,
+.navbar-brand:focus {
+  color: var(--ally-violet-600);
+}
+.template-home .page-header h1 {
+  font-size: 5rem;
+  margin-bottom: 0.25rem;
+}
+@media (min-width: 992px) {
+  .template-home .page-header h1 {
+    font-size: 6.5rem;
+  }
+}
+.template-home .page-header {
+  border-bottom: 0;
+  margin-top: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Navbar: white, hairline border, calm links. */
+.navbar {
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--ally-gray-200);
+}
+.navbar .nav-text {
+  font-family: var(--ally-mono);
+  font-size: 0.75rem;
+  color: var(--ally-gray-500) !important;
+}
+.navbar .nav-link {
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--ally-navy-800);
+}
+.navbar .nav-link:hover,
+.navbar .nav-link:focus,
+.navbar .nav-link.active {
+  color: var(--ally-violet-600);
+}
+.navbar .nav-link.active {
+  background-color: var(--ally-violet-50);
+  border-radius: 0.5rem;
+}
+.navbar .form-control {
+  border-radius: 0.75rem;
+  border-color: var(--ally-gray-200);
+  background-color: #fff;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.06);
+}
+
+/* Links */
+a {
+  color: var(--ally-violet-600);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+}
+a:hover {
+  color: var(--ally-violet-700);
+}
+
+/* Section headings */
+main h2 {
+  font-size: 1.75rem;
+  margin-top: 2.5rem;
+}
+main h3 {
+  font-size: 1.25rem;
+}
+
+/* Code: Roboto Mono, rounded cards with a hairline border. */
+code, pre, kbd, samp {
+  font-family: var(--ally-mono);
+}
+pre {
+  background-color: var(--ally-gray-50);
+  border: 1px solid var(--ally-gray-200);
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  font-size: 0.85rem;
+}
+code:not(pre code) {
+  background-color: var(--ally-violet-50);
+  color: var(--ally-navy-800);
+  border-radius: 0.375rem;
+  padding: 0.1em 0.35em;
+}
+pre code {
+  background: transparent;
+  padding: 0;
+}
+.sourceCode a,
+.sourceCode a:hover {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--ally-violet-300);
+}
+
+/* Sidebar: mono eyebrow headings, like the topic labels on Ally cards. */
+aside h2 {
+  font-family: var(--ally-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ally-gray-500);
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+aside {
+  font-size: 0.9rem;
+}
+aside .list-unstyled li {
+  margin-bottom: 0.25rem;
+}
+
+/* Tables: hairline dividers instead of Bootstrap's heavy rules. */
+.table {
+  --bs-table-border-color: var(--ally-gray-200);
+  font-size: 0.95rem;
+}
+.table > :not(caption) > * > * {
+  padding: 0.75rem 0.75rem;
+}
+.table thead th {
+  font-family: var(--ally-display);
+  font-weight: 600;
+  color: var(--ally-navy-900);
+  border-bottom-width: 1px;
+}
+
+/* Reference index and function pages */
+.ref-index h2,
+.template-reference-index h2 {
+  font-size: 1.5rem;
+}
+.ref-description {
+  color: var(--ally-gray-600);
+}
+dl dt {
+  font-family: var(--ally-mono);
+  font-weight: 500;
+}
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--ally-gray-200);
+  color: var(--ally-gray-500);
+  font-size: 0.85rem;
+}

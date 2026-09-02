@@ -2,7 +2,13 @@ url: https://rfortherestofus.github.io/ally/
 
 template:
   bootstrap: 5
-  bootswatch: flatly
+  bslib:
+    bg: "#ffffff"
+    fg: "#0a172d"
+    primary: "#552fef"
+    base_font: {google: "Inter"}
+    code_font: {google: "Roboto Mono"}
+    border-radius: 0.75rem
 
 home:
   title: "ally: R-native tooling for AI coding assistants"
