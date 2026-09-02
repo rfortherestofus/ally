@@ -5,7 +5,7 @@
 
 {ally} helps R users get the most out of AI coding tools. It is the companion
 package to [Ally](https://rfortherestofus.com/ally), a subscription product
-from R for the Rest of Us aimed at advanced R users navigating the AI
+from R for the Rest of Us aimed at R users navigating the AI
 transition.
 
 The first feature is **skill installation**: a simple, R-native way to
