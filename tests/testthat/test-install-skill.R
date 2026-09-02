@@ -109,6 +109,37 @@ test_that("install_skill with copy = TRUE copies the Claude folder", {
   expect_true(fs::file_exists(".claude/skills/copy-me/SKILL.md"))
 })
 
+test_that("install_skill refuses a folder without a SKILL.md", {
+  proj <- withr::local_tempdir()
+  withr::local_dir(proj)
+  src <- withr::local_tempdir()
+  writeLines("not a skill", fs::path(src, "README.md"))
+
+  expect_error(install_skill(src), "SKILL.md")
+  expect_false(fs::dir_exists(".agents/skills"))
+})
+
+test_that("scope = 'user' installs under the home folder, not the project", {
+  home <- withr::local_tempdir()
+  withr::local_envvar(HOME = home, USERPROFILE = home)
+  proj <- withr::local_tempdir()
+  withr::local_dir(proj)
+
+  res <- install_skill(make_local_skill("everywhere"), scope = "user")
+
+  expect_equal(res$scope, "user")
+  expect_true(fs::file_exists(fs::path(home, ".agents/skills/everywhere/SKILL.md")))
+  expect_true(fs::file_exists(fs::path(home, ".claude/skills/everywhere/SKILL.md")))
+  expect_false(fs::dir_exists(".agents"))
+
+  expect_equal(installed_skills(scope = "user"), "everywhere")
+  expect_equal(installed_skills(), character())
+
+  remove_skill("everywhere", scope = "user")
+  expect_false(fs::dir_exists(fs::path(home, ".agents/skills/everywhere")))
+  expect_false(fs::link_exists(fs::path(home, ".claude/skills/everywhere")))
+})
+
 test_that("supported_agents lists Claude Code only (Codex is native)", {
   expect_equal(names(supported_agents()), "claude")
 })

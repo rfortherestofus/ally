@@ -2,7 +2,7 @@
 % Please edit documentation in R/agents.R
 \name{supported_agents}
 \alias{supported_agents}
-\title{Agents that need a symlink}
+\title{Agents that need a link}
 \usage{
 supported_agents()
 }
@@ -10,7 +10,9 @@ supported_agents()
 A named list of agent definitions.
 }
 \description{
-\code{ally} stores skills at \verb{.agents/skills/<skill>}, which Codex auto-discovers
-natively. Other agents read from their own folders, so they need a symlink
-pointing back to the canonical copy. This list enumerates those agents.
+\code{ally} stores skills at \verb{.agents/skills/<skill>}, the shared folder that Codex and a
+growing number of agents read directly. Agents that only read their own folder get a
+link there pointing back to the canonical copy. This list enumerates those agents.
+The folder is relative to the scope root: the project for \code{scope = "project"}, the
+home folder for \code{scope = "user"}.
 }

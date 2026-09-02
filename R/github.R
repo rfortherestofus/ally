@@ -1,119 +1,70 @@
-#' @keywords internal
-#' @noRd
-github_api_request <- function(url, query = list()) {
-  req <- httr2::request(url) |>
-    httr2::req_headers(
-      Accept = "application/vnd.github+json",
-      "X-GitHub-Api-Version" = "2022-11-28",
-      "User-Agent" = "ally-r-package"
-    )
-
-  pat <- github_pat()
-  if (!is.null(pat)) {
-    req <- httr2::req_auth_bearer_token(req, pat)
-  }
-
-  if (length(query)) {
-    req <- httr2::req_url_query(req, !!!query)
-  }
-
-  resp <- tryCatch(
-    httr2::req_perform(req),
-    httr2_http_403 = function(cnd) handle_rate_limit(cnd),
-    httr2_http_404 = function(cnd) {
-      cli::cli_abort("GitHub returned 404 for {.url {url}}.", parent = cnd)
-    }
-  )
-
-  resp
-}
-
-#' @keywords internal
-#' @noRd
-github_pat <- function() {
-  for (var in c("GITHUB_PAT", "GITHUB_TOKEN")) {
-    val <- Sys.getenv(var, unset = "")
-    if (nzchar(val)) {
-      return(val)
-    }
-  }
-  NULL
-}
-
-#' @keywords internal
-#' @noRd
-handle_rate_limit <- function(cnd) {
-  cli::cli_abort(c(
-    "GitHub API rate limit hit (or access denied).",
-    "i" = if (is.null(github_pat())) {
-      "Set {.envvar GITHUB_PAT} in your {.file .Renviron} to raise the limit."
-    } else {
-      "Your {.envvar GITHUB_PAT} may not have access to this repository."
-    }
-  ), parent = cnd)
-}
-
-#' @keywords internal
-#' @noRd
-github_contents_url <- function(owner, repo, path) {
-  paste0(
-    "https://api.github.com/repos/",
-    owner, "/", repo, "/contents/",
-    utils::URLencode(path)
-  )
-}
-
-#' Download a directory from GitHub into `dest`
+#' Download a skill folder from a GitHub repository into `dest`
 #'
-#' Recursively walks the directory at `path` in the given repo and writes
-#' every file under `dest`, preserving structure.
+#' Fetches the repository's zip archive from `github.com/<owner>/<repo>/archive/<ref>.zip`,
+#' which is a single download that needs no token and is not counted against the GitHub
+#' API rate limit, then copies the skill folder out of it. `path` may be `""` for a skill
+#' whose `SKILL.md` sits at the top of the repository.
 #'
 #' @keywords internal
 #' @noRd
 github_download_dir <- function(owner, repo, path, dest, ref = NA_character_) {
-  fs::dir_create(dest, recurse = TRUE)
-  url <- github_contents_url(owner, repo, path)
-  query <- if (!is.na(ref)) list(ref = ref) else list()
-  resp <- github_api_request(url, query = query)
-  entries <- httr2::resp_body_json(resp)
+  ref <- if (is.na(ref) || !nzchar(ref)) "HEAD" else ref
+  label <- paste0(owner, "/", repo, if (ref != "HEAD") paste0("@", ref) else "")
 
-  if (is.null(entries) || (length(entries) > 0 && !is.null(entries$type) && length(entries$type) == 1)) {
+  archive <- github_download_archive(owner, repo, ref, label)
+  extracted <- unzip_archive(archive)
+  source_dir <- if (nzchar(path)) fs::path(extracted, path) else extracted
+
+  if (!fs::dir_exists(source_dir)) {
     cli::cli_abort(c(
-      "{.val {path}} is a file, not a directory.",
-      "i" = "Point at a skill directory (one containing a {.file SKILL.md})."
+      "No folder {.path {path}} in {.val {label}}.",
+      "i" = "Check the path against the repository on GitHub."
     ))
   }
 
-  for (entry in entries) {
-    rel <- sub(paste0("^", path, "/?"), "", entry$path)
-    target <- fs::path(dest, rel)
-
-    if (identical(entry$type, "dir")) {
-      fs::dir_create(target, recurse = TRUE)
-      github_download_dir(owner, repo, entry$path, dest, ref = ref)
-    } else if (identical(entry$type, "file")) {
-      download_url <- entry$download_url
-      if (is.null(download_url)) {
-        cli::cli_abort("No download URL for {.val {entry$path}}.")
-      }
-      fs::dir_create(fs::path_dir(target), recurse = TRUE)
-      download_file(download_url, target)
-    }
-  }
-
+  fs::dir_create(fs::path_dir(dest), recurse = TRUE)
+  fs::dir_copy(source_dir, dest, overwrite = TRUE)
   invisible(dest)
 }
 
 #' @keywords internal
 #' @noRd
-download_file <- function(url, dest) {
-  req <- httr2::request(url) |>
-    httr2::req_headers("User-Agent" = "ally-r-package")
-  pat <- github_pat()
-  if (!is.null(pat) && grepl("api\\.github\\.com|raw\\.githubusercontent\\.com", url)) {
-    req <- httr2::req_auth_bearer_token(req, pat)
+github_download_archive <- function(owner, repo, ref, label) {
+  url <- paste0("https://github.com/", owner, "/", repo, "/archive/", ref, ".zip")
+  archive <- withr::local_tempfile(fileext = ".zip", .local_envir = parent.frame())
+
+  ok <- tryCatch(
+    {
+      utils::download.file(url, archive, mode = "wb", quiet = TRUE)
+      TRUE
+    },
+    error = function(e) FALSE,
+    warning = function(w) FALSE
+  )
+
+  if (!ok || !fs::file_exists(archive) || fs::file_size(archive) == 0) {
+    cli::cli_abort(c(
+      "Could not download {.val {label}} from GitHub.",
+      "i" = "Check that the repository is public and that {.val {ref}} is a branch, tag or commit.",
+      "i" = "Tried {.url {url}}."
+    ))
   }
-  resp <- httr2::req_perform(req)
-  writeBin(httr2::resp_body_raw(resp), dest)
-  invisible(dest)
+
+  archive
+}
+
+#' Unzip a GitHub archive and return its single top-level folder
+#'
+#' @keywords internal
+#' @noRd
+unzip_archive <- function(archive) {
+  exdir <- withr::local_tempdir(.local_envir = parent.frame())
+  utils::unzip(archive, exdir = exdir)
+
+  top <- fs::dir_ls(exdir, type = "directory")
+  if (length(top) != 1) {
+    cli::cli_abort("Unexpected archive layout: expected one top-level folder, found {length(top)}.")
+  }
+
+  top
 }

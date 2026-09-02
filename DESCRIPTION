@@ -1,6 +1,6 @@
 Package: ally
 Title: Helpers for Using AI Coding Tools with R
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R:
     person("David", "Keyes", , "david@rfortherestofus.com", role = c("aut", "cre"))
 Description: Companion package to Ally, a subscription product from R for the
@@ -10,18 +10,17 @@ Description: Companion package to Ally, a subscription product from R for the
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 Depends:
     R (>= 4.1.0)
 Imports:
     cli,
     fs,
-    httr2,
-    jsonlite
+    jsonlite,
+    withr
 Suggests:
     pkgdown,
-    testthat (>= 3.0.0),
-    withr
+    testthat (>= 3.0.0)
 Config/testthat/edition: 3
 URL: https://github.com/rfortherestofus/ally
 BugReports: https://github.com/rfortherestofus/ally/issues
+Config/roxygen2/version: 8.0.0

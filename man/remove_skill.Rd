@@ -4,15 +4,18 @@
 \alias{remove_skill}
 \title{Remove an installed skill}
 \usage{
-remove_skill(skill)
+remove_skill(skill, scope = c("project", "user"))
 }
 \arguments{
 \item{skill}{Name of the installed skill.}
+
+\item{scope}{\code{"project"} installs into the current working directory,
+\code{"user"} into your home folder.}
 }
 \value{
 Invisibly \code{TRUE}.
 }
 \description{
 Deletes the canonical copy at \verb{.agents/skills/<skill>/} and removes the
-symlink (or copy) at \verb{.claude/skills/<skill>}.
+link (or copy) at \verb{.claude/skills/<skill>}.
 }

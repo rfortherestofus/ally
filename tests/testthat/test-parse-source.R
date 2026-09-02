@@ -28,8 +28,18 @@ test_that("local paths are detected", {
 
 test_that("invalid GitHub shorthand errors", {
   expect_error(parse_source("just-a-name"), "Invalid source")
-  expect_error(parse_source("owner/repo"), "Invalid source")
+  expect_error(parse_source("owner//path"), "Invalid source")
   expect_error(parse_source("owner/repo/path@"), "Invalid source")
+})
+
+test_that("owner/repo shorthand is a top-level skill named after the repository", {
+  parsed <- parse_source("statzhero/tidy-r-skill")
+  expect_equal(parsed$path, "")
+  expect_equal(parsed$skill_name, "tidy-r-skill")
+
+  parsed_ref <- parse_source("statzhero/tidy-r-skill@v1")
+  expect_equal(parsed_ref$ref, "v1")
+  expect_equal(parsed_ref$skill_name, "tidy-r-skill")
 })
 
 test_that("GitHub shorthand strips a trailing /SKILL.md", {
@@ -38,11 +48,10 @@ test_that("GitHub shorthand strips a trailing /SKILL.md", {
   expect_equal(parsed$skill_name, "critical-code-reviewer")
 })
 
-test_that("shorthand SKILL.md without a directory errors", {
-  expect_error(
-    parse_source("owner/repo/SKILL.md"),
-    "Point at the skill"
-  )
+test_that("shorthand SKILL.md at the repository root is a top-level skill", {
+  parsed <- parse_source("owner/repo/SKILL.md")
+  expect_equal(parsed$path, "")
+  expect_equal(parsed$skill_name, "repo")
 })
 
 test_that("full GitHub URLs are parsed (tree form)", {
@@ -75,15 +84,22 @@ test_that("GitHub URLs handle trailing slashes, query, fragment, .git", {
   expect_equal(parsed$skill_name, "foo")
 })
 
+test_that("GitHub URLs to a repository root are top-level skills", {
+  parsed <- parse_source("https://github.com/statzhero/tidy-r-skill")
+  expect_equal(parsed$path, "")
+  expect_true(is.na(parsed$ref))
+  expect_equal(parsed$skill_name, "tidy-r-skill")
+
+  parsed_ref <- parse_source("https://github.com/statzhero/tidy-r-skill/tree/main")
+  expect_equal(parsed_ref$ref, "main")
+  expect_equal(parsed_ref$skill_name, "tidy-r-skill")
+
+  parsed_md <- parse_source("https://github.com/statzhero/tidy-r-skill/blob/main/SKILL.md")
+  expect_equal(parsed_md$path, "")
+  expect_equal(parsed_md$skill_name, "tidy-r-skill")
+})
+
 test_that("invalid GitHub URLs error informatively", {
-  expect_error(
-    parse_source("https://github.com/posit-dev/skills"),
-    "missing the path to a skill"
-  )
-  expect_error(
-    parse_source("https://github.com/posit-dev/skills/tree/main"),
-    "missing the path to a skill"
-  )
   expect_error(
     parse_source("https://github.com/posit-dev"),
     "Invalid GitHub URL"
@@ -93,8 +109,8 @@ test_that("invalid GitHub URLs error informatively", {
     "Invalid GitHub URL"
   )
   expect_error(
-    parse_source("https://github.com/owner/repo/tree/main/SKILL.md"),
-    "Point at the skill"
+    parse_source("https://github.com/owner/repo/issues/1"),
+    "Invalid GitHub URL"
   )
 })
 

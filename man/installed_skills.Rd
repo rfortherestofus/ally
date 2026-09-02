@@ -4,10 +4,14 @@
 \alias{installed_skills}
 \title{List installed skills}
 \usage{
-installed_skills()
+installed_skills(scope = c("project", "user"))
+}
+\arguments{
+\item{scope}{\code{"project"} installs into the current working directory,
+\code{"user"} into your home folder.}
 }
 \value{
-Character vector of skill names found in \verb{.agents/skills/}.
+Character vector of skill names found in \verb{.agents/skills/} for the scope.
 }
 \description{
 List installed skills

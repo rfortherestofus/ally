@@ -1,8 +1,10 @@
-#' Agents that need a symlink
+#' Agents that need a link
 #'
-#' `ally` stores skills at `.agents/skills/<skill>`, which Codex auto-discovers
-#' natively. Other agents read from their own folders, so they need a symlink
-#' pointing back to the canonical copy. This list enumerates those agents.
+#' `ally` stores skills at `.agents/skills/<skill>`, the shared folder that Codex and a
+#' growing number of agents read directly. Agents that only read their own folder get a
+#' link there pointing back to the canonical copy. This list enumerates those agents.
+#' The folder is relative to the scope root: the project for `scope = "project"`, the
+#' home folder for `scope = "user"`.
 #'
 #' @return A named list of agent definitions.
 #' @export
@@ -11,7 +13,7 @@ supported_agents <- function() {
     claude = list(
       id = "claude",
       name = "Claude Code",
-      project_skills_dir = ".claude/skills"
+      skills_dir = ".claude/skills"
     )
   )
 }
