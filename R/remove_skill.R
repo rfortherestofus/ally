@@ -1,14 +1,16 @@
 #' Remove an installed skill
 #'
 #' Deletes the canonical copy at `.agents/skills/<skill>/` and removes the
-#' symlink (or copy) at `.claude/skills/<skill>`.
+#' link (or copy) at `.claude/skills/<skill>`.
 #'
 #' @param skill Name of the installed skill.
+#' @inheritParams install_skill
 #'
 #' @return Invisibly `TRUE`.
 #' @export
-remove_skill <- function(skill) {
-  root <- getwd()
+remove_skill <- function(skill, scope = c("project", "user")) {
+  scope <- match.arg(scope)
+  root <- skills_root(scope)
   canonical_root <- canonical_skills_dir(root)
   skill_dir <- fs::path(canonical_root, skill)
 
@@ -25,7 +27,7 @@ remove_skill <- function(skill) {
     if (fs::link_exists(link_path)) {
       fs::link_delete(link_path)
       cli::cli_alert_success(
-        "Removed symlink at {.path {pretty_path(link_path)}}"
+        "Removed link at {.path {pretty_path(link_path)}}"
       )
     } else if (fs::dir_exists(link_path)) {
       fs::dir_delete(link_path)

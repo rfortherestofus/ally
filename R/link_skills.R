@@ -1,8 +1,8 @@
 #' Re-link installed skills to Claude Code
 #'
 #' Walks every skill in `.agents/skills/` and (re)creates the
-#' `.claude/skills/<skill>` symlink for each. Useful if a symlink was
-#' deleted manually. Codex reads `.agents/skills/` natively, so no work is
+#' `.claude/skills/<skill>` link for each. Useful if a link was
+#' deleted by hand. Codex reads `.agents/skills/` directly, so no work is
 #' needed for it.
 #'
 #' @inheritParams install_skill
@@ -10,8 +10,9 @@
 #' @return Invisibly, a list with one entry per skill describing the links
 #'   created or refreshed.
 #' @export
-link_skills <- function(copy = FALSE) {
-  root <- getwd()
+link_skills <- function(scope = c("project", "user"), copy = FALSE) {
+  scope <- match.arg(scope)
+  root <- skills_root(scope)
   canonical_root <- canonical_skills_dir(root)
   if (!fs::dir_exists(canonical_root)) {
     cli::cli_alert_info(
@@ -20,7 +21,7 @@ link_skills <- function(copy = FALSE) {
     return(invisible(list()))
   }
 
-  skills <- installed_skills()
+  skills <- installed_skills(scope = scope)
   if (length(skills) == 0) {
     cli::cli_alert_info("No skills installed.")
     return(invisible(list()))
@@ -41,10 +42,13 @@ link_skills <- function(copy = FALSE) {
 
 #' List installed skills
 #'
-#' @return Character vector of skill names found in `.agents/skills/`.
+#' @inheritParams install_skill
+#'
+#' @return Character vector of skill names found in `.agents/skills/` for the scope.
 #' @export
-installed_skills <- function() {
-  canonical_root <- canonical_skills_dir(getwd())
+installed_skills <- function(scope = c("project", "user")) {
+  scope <- match.arg(scope)
+  canonical_root <- canonical_skills_dir(skills_root(scope))
   if (!fs::dir_exists(canonical_root)) {
     return(character())
   }

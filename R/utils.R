@@ -1,17 +1,5 @@
 #' @keywords internal
 #' @noRd
-canonical_skills_dir <- function(root = getwd()) {
-  fs::path(root, ".agents/skills")
-}
-
-#' @keywords internal
-#' @noRd
-agent_skills_dir <- function(agent, root = getwd()) {
-  fs::path(root, agent$project_skills_dir)
-}
-
-#' @keywords internal
-#' @noRd
 parse_source <- function(source) {
   source <- trimws(source)
 
@@ -44,30 +32,32 @@ parse_source <- function(source) {
   }
 
   parts <- strsplit(source, "/", fixed = TRUE)[[1]]
-  if (length(parts) < 3 || any(nchar(parts) == 0)) {
+  if (length(parts) < 2 || any(nchar(parts) == 0)) {
     cli::cli_abort(c(
       "Invalid source {.val {source}}.",
       "i" = "Expected GitHub shorthand {.val owner/repo/skill-name}, a GitHub URL, or a local path."
     ))
   }
 
-  if (parts[length(parts)] == "SKILL.md") {
-    if (length(parts) < 4) {
-      cli::cli_abort(c(
-        "Invalid source {.val {source}}.",
-        "i" = "Point at the skill {.emph directory}, not its {.file SKILL.md}."
-      ))
-    }
-    parts <- parts[-length(parts)]
+  github_source(owner = parts[1], repo = parts[2], path_parts = parts[-(1:2)], ref = ref)
+}
+
+#' A GitHub source, named after the skill folder or, for a top-level skill, the repository
+#'
+#' @keywords internal
+#' @noRd
+github_source <- function(owner, repo, path_parts, ref = NA_character_) {
+  if (length(path_parts) > 0 && path_parts[length(path_parts)] == "SKILL.md") {
+    path_parts <- path_parts[-length(path_parts)]
   }
 
   list(
     type = "github",
-    owner = parts[1],
-    repo = parts[2],
-    path = paste(parts[-(1:2)], collapse = "/"),
+    owner = owner,
+    repo = repo,
+    path = paste(path_parts, collapse = "/"),
     ref = ref,
-    skill_name = parts[length(parts)]
+    skill_name = if (length(path_parts) > 0) path_parts[length(path_parts)] else repo
   )
 }
 
@@ -94,36 +84,19 @@ parse_github_url <- function(url) {
   owner <- parts[1]
   repo <- sub("\\.git$", "", parts[2])
 
-  if (length(parts) < 5 || !(parts[3] %in% c("blob", "tree"))) {
+  # https://github.com/owner/repo is a top-level skill at the default branch.
+  if (length(parts) == 2) {
+    return(github_source(owner, repo, character(), ref = NA_character_))
+  }
+
+  if (length(parts) < 4 || !(parts[3] %in% c("blob", "tree"))) {
     cli::cli_abort(c(
-      "GitHub URL {.val {original}} is missing the path to a skill directory.",
+      "Invalid GitHub URL {.val {original}}.",
       "i" = "Expected {.val https://github.com/owner/repo/tree/<ref>/path/to/skill}."
     ))
   }
 
-  ref <- parts[4]
-  path_parts <- parts[-(1:4)]
-
-  if (length(path_parts) > 0 &&
-        path_parts[length(path_parts)] == "SKILL.md") {
-    path_parts <- path_parts[-length(path_parts)]
-  }
-
-  if (length(path_parts) == 0) {
-    cli::cli_abort(c(
-      "Invalid GitHub URL {.val {original}}.",
-      "i" = "Point at the skill {.emph directory}, not its {.file SKILL.md} or the ref root."
-    ))
-  }
-
-  list(
-    type = "github",
-    owner = owner,
-    repo = repo,
-    path = paste(path_parts, collapse = "/"),
-    ref = ref,
-    skill_name = path_parts[length(path_parts)]
-  )
+  github_source(owner, repo, parts[-(1:4)], ref = parts[4])
 }
 
 #' @keywords internal

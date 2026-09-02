@@ -4,12 +4,15 @@
 \alias{link_skills}
 \title{Re-link installed skills to Claude Code}
 \usage{
-link_skills(copy = FALSE)
+link_skills(scope = c("project", "user"), copy = FALSE)
 }
 \arguments{
+\item{scope}{\code{"project"} installs into the current working directory,
+\code{"user"} into your home folder.}
+
 \item{copy}{If \code{TRUE}, copy the skill into agent folders instead of
-symlinking. Symlinks are tried first when \code{FALSE}; this only forces the
-fallback up front (useful on Windows without dev mode).}
+linking. Links are tried first when \code{FALSE}; this only forces the
+fallback up front (useful on Windows without developer mode).}
 }
 \value{
 Invisibly, a list with one entry per skill describing the links
@@ -17,7 +20,7 @@ created or refreshed.
 }
 \description{
 Walks every skill in \verb{.agents/skills/} and (re)creates the
-\verb{.claude/skills/<skill>} symlink for each. Useful if a symlink was
-deleted manually. Codex reads \verb{.agents/skills/} natively, so no work is
+\verb{.claude/skills/<skill>} link for each. Useful if a link was
+deleted by hand. Codex reads \verb{.agents/skills/} directly, so no work is
 needed for it.
 }

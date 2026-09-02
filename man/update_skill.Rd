@@ -4,20 +4,23 @@
 \alias{update_skill}
 \title{Update an installed skill from its original source}
 \usage{
-update_skill(skill, copy = FALSE)
+update_skill(skill, scope = c("project", "user"), copy = FALSE)
 }
 \arguments{
 \item{skill}{Name of the installed skill (matches the directory name in
 \verb{.agents/skills/}).}
 
+\item{scope}{\code{"project"} installs into the current working directory,
+\code{"user"} into your home folder.}
+
 \item{copy}{If \code{TRUE}, copy the skill into agent folders instead of
-symlinking. Symlinks are tried first when \code{FALSE}; this only forces the
-fallback up front (useful on Windows without dev mode).}
+linking. Links are tried first when \code{FALSE}; this only forces the
+fallback up front (useful on Windows without developer mode).}
 }
 \value{
 Invisibly, the result of \code{\link[=install_skill]{install_skill()}}.
 }
 \description{
 Re-fetches the skill from whatever source it was installed from (recorded
-in \code{.ally-source.json}) and refreshes the Claude Code symlink.
+in \code{.ally-source.json}) and refreshes the Claude Code link.
 }

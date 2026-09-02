@@ -4,44 +4,53 @@
 \alias{install_skill}
 \title{Install an AI coding assistant skill}
 \usage{
-install_skill(source, copy = FALSE)
+install_skill(source, scope = c("project", "user"), copy = FALSE)
 }
 \arguments{
 \item{source}{One of:
 \itemize{
+\item A full GitHub URL, pasted straight from the browser, e.g.
+\verb{https://github.com/owner/repo/tree/main/path/to/skill}. A link to the
+\code{SKILL.md} itself also works, and so does a repository whose \code{SKILL.md}
+sits at the top level (the skill is then named after the repository).
+Refs containing \code{/} (e.g. \code{release/v1}) cannot be disambiguated from a
+URL; use the shorthand \code{owner/repo/path@release/v1} instead.
 \item GitHub shorthand \code{owner/repo/path/to/skill} (optionally \verb{@ref} for a
-branch/tag/sha)
-\item A full GitHub URL, e.g.
-\verb{https://github.com/owner/repo/tree/main/path/to/skill} (URLs ending
-in \verb{/SKILL.md} are accepted; the parent directory is used). Refs
-containing \code{/} (e.g. \code{release/v1}) cannot be disambiguated from a
-URL — use the shorthand \code{owner/repo/path@release/v1} instead.
-\item A local filesystem path to a skill directory
+branch, tag or commit), or just \code{owner/repo} for a top-level skill.
+\item A local filesystem path to a skill directory.
 }}
 
+\item{scope}{\code{"project"} installs into the current working directory,
+\code{"user"} into your home folder.}
+
 \item{copy}{If \code{TRUE}, copy the skill into agent folders instead of
-symlinking. Symlinks are tried first when \code{FALSE}; this only forces the
-fallback up front (useful on Windows without dev mode).}
+linking. Links are tried first when \code{FALSE}; this only forces the
+fallback up front (useful on Windows without developer mode).}
 }
 \value{
 Invisibly, a list describing the install.
 }
 \description{
-Downloads (or copies) a skill into \verb{.agents/skills/<skill-name>/} in the
-current working directory and creates a symlink at
-\verb{.claude/skills/<skill-name>} so Claude Code picks it up. Codex
-auto-discovers skills from \verb{.agents/skills/} natively, so no symlink is
-needed for Codex.
+Downloads (or copies) a skill into \verb{.agents/skills/<skill-name>/}, the shared folder
+that Codex and other agents read directly, and links it into \verb{.claude/skills/<skill-name>}
+so Claude Code sees the same copy. With \code{scope = "project"} (the default) both folders
+sit in the current working directory and the skill travels with the project. With
+\code{scope = "user"} they sit in your home folder and every project on the computer can
+use the skill.
+}
+\details{
+GitHub skills are fetched from the repository's zip archive: one download, no token,
+no API rate limit. Public repositories only.
 }
 \examples{
 \dontrun{
-# GitHub shorthand
-install_skill("ab604/claude-code-r-skills/.claude/skills/r-style-guide")
-
-# Full GitHub URL (also works with the SKILL.md link)
+# Paste the SKILL.md link from GitHub
 install_skill(
-  "https://github.com/posit-dev/skills/tree/main/posit-dev/critical-code-reviewer"
+  "https://github.com/posit-dev/skills/blob/main/r-lib/r-cli-app/SKILL.md"
 )
+
+# Make it available to every project on this computer
+install_skill("posit-dev/skills/r-lib/r-cli-app", scope = "user")
 
 # Local path
 install_skill("~/my-skills/r-style-guide")

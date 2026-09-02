@@ -21,41 +21,57 @@ pak::pak("rfortherestofus/ally")
 
 ## Quick start
 
-From the root of any project:
+Paste the link to a skill's `SKILL.md` straight from GitHub:
 
 ```r
-library(ally)
-
-install_skill("ab604/claude-code-r-skills/.claude/skills/r-style-guide")
-#> ✔ Installed "r-style-guide" to .agents/skills/r-style-guide
-#> ℹ Codex auto-discovers skills from .agents/skills/ — no symlink needed.
+ally::install_skill(
+  "https://github.com/posit-dev/skills/blob/main/r-lib/r-cli-app/SKILL.md"
+)
+#> ✔ Installed "r-cli-app" to .agents/skills/r-cli-app
+#> ℹ Codex and other agents read .agents/skills/ directly.
 #> ✔ Linked to "Claude Code" (.claude/skills)
 ```
 
-The skill lives in a single canonical location: `.agents/skills/<skill>`.
-Codex discovers skills there natively. Claude Code looks in
-`.claude/skills/`, so {ally} creates a symlink there pointing back to the
-canonical copy.
+The skill lives in a single canonical location, `.agents/skills/<skill>`,
+which Codex and a growing number of agents read directly. Claude Code looks
+in `.claude/skills/`, so {ally} creates a relative symlink there pointing
+back to the canonical copy.
+
+## This project or every project
+
+By default a skill is installed into the current working directory, so it
+travels with the project. Pass `scope = "user"` to install it into your home
+folder instead, where every project on the computer can use it:
+
+```r
+ally::install_skill("posit-dev/skills/r-lib/r-cli-app", scope = "user")
+#> ✔ Installed "r-cli-app" to ~/.agents/skills/r-cli-app
+#> ℹ Every project on this computer can use skills in ~/.agents/skills/.
+#> ✔ Linked to "Claude Code" (~/.claude/skills)
+```
 
 ## How it works
 
 | Path | What it is |
 |---|---|
-| `.agents/skills/<skill>/` | Real directory — canonical copy. Codex reads it natively. |
-| `.claude/skills/<skill>` | Symlink → `.agents/skills/<skill>`. So Claude Code sees the same content. |
+| `.agents/skills/<skill>/` | Real directory, the canonical copy. Codex reads it directly. |
+| `.claude/skills/<skill>` | Relative symlink to `../../.agents/skills/<skill>`, so Claude Code sees the same content. |
+
+With `scope = "user"` the same two folders sit in your home directory.
 
 If symlinks aren't supported (typically Windows without developer mode),
 {ally} falls back to copying and tells you it did so. You can also force
 copying with `copy = TRUE`.
 
+Skills are fetched from the repository's zip archive on GitHub: a single
+download that needs no token and never counts against the GitHub API rate
+limit, so a room full of people on one network can install at once. Public
+repositories only.
+
 ## Sources
 
 ```r
-# GitHub shorthand: owner/repo/path/to/skill[@ref]
-install_skill("ab604/claude-code-r-skills/.claude/skills/r-style-guide")
-install_skill("owner/repo/skills/my-skill@dev")
-
-# Full GitHub URL — paste it straight from the browser
+# Full GitHub URL, pasted straight from the browser
 install_skill(
   "https://github.com/posit-dev/skills/tree/main/posit-dev/critical-code-reviewer"
 )
@@ -63,8 +79,14 @@ install_skill(
 install_skill(
   "https://github.com/posit-dev/skills/blob/main/posit-dev/critical-code-reviewer/SKILL.md"
 )
+# A repository whose SKILL.md sits at the top level is named after the repository
+install_skill("https://github.com/statzhero/tidy-r-skill")
 
-# Local path — handy for skill development
+# GitHub shorthand: owner/repo/path/to/skill[@ref]
+install_skill("ab604/claude-code-r-skills/.claude/skills/r-style-guide")
+install_skill("owner/repo/skills/my-skill@dev")
+
+# Local path, handy for skill development
 install_skill("~/my-skills/r-style-guide")
 ```
 
@@ -78,17 +100,7 @@ remove_skill("r-style-guide")     # delete canonical copy + Claude symlink
 supported_agents()                # introspect agents that need a symlink
 ```
 
-## GitHub authentication
-
-Public-repo downloads use unauthenticated GitHub API requests (60/hour),
-which is plenty for most workflows. If you hit a rate limit or need to
-install from a private repo, set `GITHUB_PAT` in your `.Renviron`:
-
-```
-GITHUB_PAT=your_token_here
-```
-
-You can create a GITHUB_PAT using `usethis::create_github_token()`. 
+Every one of these takes the same `scope` argument as `install_skill()`.
 
 ## Code of Conduct
 

@@ -22,5 +22,10 @@ Useful links:
 \author{
 \strong{Maintainer}: David Keyes \email{david@rfortherestofus.com}
 
+Authors:
+\itemize{
+  \item David Keyes \email{david@rfortherestofus.com}
+}
+
 }
 \keyword{internal}
