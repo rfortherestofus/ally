@@ -4,7 +4,7 @@ Version: 0.1.0
 Authors@R:
     person("David", "Keyes", , "david@rfortherestofus.com", role = c("aut", "cre"))
 Description: Companion package to Ally, a subscription product from R for the
-    Rest of Us aimed at advanced R users navigating the AI transition. Provides
+    Rest of Us aimed at R users navigating the AI transition. Provides
     R-native tooling for working with AI coding assistants, starting with
     installation and management of agent skills.
 License: MIT + file LICENSE
