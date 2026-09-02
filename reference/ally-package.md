@@ -16,3 +16,7 @@ Useful links:
 ## Author
 
 **Maintainer**: David Keyes <david@rfortherestofus.com>
+
+Authors:
+
+- David Keyes <david@rfortherestofus.com>

@@ -11,7 +11,7 @@ Install, update, and remove agent skills.
 - [`remove_skill()`](https://rfortherestofus.github.io/ally/reference/remove_skill.md)
   : Remove an installed skill
 - [`link_skills()`](https://rfortherestofus.github.io/ally/reference/link_skills.md)
-  : Re-link installed skills to Claude Code
+  : Refresh the Claude Code copies of installed skills
 - [`installed_skills()`](https://rfortherestofus.github.io/ally/reference/installed_skills.md)
   : List installed skills
 
@@ -20,4 +20,4 @@ Install, update, and remove agent skills.
 Introspect the agents that ally installs skills for.
 
 - [`supported_agents()`](https://rfortherestofus.github.io/ally/reference/supported_agents.md)
-  : Agents that need a symlink
+  : Agents that need a link

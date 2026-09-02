@@ -1,12 +1,12 @@
 # Remove an installed skill
 
 Deletes the canonical copy at `.agents/skills/<skill>/` and removes the
-symlink (or copy) at `.claude/skills/<skill>`.
+copy (or link) at `.claude/skills/<skill>`.
 
 ## Usage
 
 ``` r
-remove_skill(skill)
+remove_skill(skill, scope = c("project", "user"))
 ```
 
 ## Arguments
@@ -14,6 +14,11 @@ remove_skill(skill)
 - skill:
 
   Name of the installed skill.
+
+- scope:
+
+  `"project"` installs into the current working directory, `"user"` into
+  your home folder.
 
 ## Value
 

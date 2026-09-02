@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>ally — R-native tooling for AI coding assistants • ally</title>
+<title>ally: R-native tooling for AI coding assistants • ally</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="ally — R-native tooling for AI coding assistants">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="ally: R-native tooling for AI coding assistants">
 <meta name="description" content="Companion package to Ally, a subscription product from R for the Rest of Us aimed at advanced R users navigating the AI transition.
 ">
 <meta property="og:description" content="Companion package to Ally, a subscription product from R for the Rest of Us aimed at advanced R users navigating the AI transition.
@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="index.html">ally</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Unreleased version">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,8 +48,7 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="ally-">ally <a href="https://rfortherestofus.github.io/ally/"><img src="reference/figures/logo.png" align="right" height="120" alt="ally hex sticker"></a>
-<a class="anchor" aria-label="anchor" href="#ally-"></a>
+<div class="page-header"><h1 id="ally">ally<a class="anchor" aria-label="anchor" href="#ally"></a>
 </h1></div>
 <!-- badges: start -->
 <!-- badges: end -->
@@ -65,15 +64,25 @@
 <div class="section level2">
 <h2 id="quick-start">Quick start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
 </h2>
-<p>From the root of any project:</p>
+<p>Paste the link to a skill’s <code>SKILL.md</code> straight from GitHub:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rfortherestofus/ally" class="external-link">ally</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="reference/install_skill.html">install_skill</a></span><span class="op">(</span><span class="st">"ab604/claude-code-r-skills/.claude/skills/r-style-guide"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✔ Installed "r-style-guide" to .agents/skills/r-style-guide</span></span>
-<span><span class="co">#&gt; ℹ Codex auto-discovers skills from .agents/skills/ — no symlink needed.</span></span>
-<span><span class="co">#&gt; ✔ Linked to "Claude Code" (.claude/skills)</span></span></code></pre></div>
-<p>The skill lives in a single canonical location: <code>.agents/skills/&lt;skill&gt;</code>. Codex discovers skills there natively. Claude Code looks in <code>.claude/skills/</code>, so {ally} creates a symlink there pointing back to the canonical copy.</p>
+<code class="sourceCode R"><span><span class="fu">ally</span><span class="fu">::</span><span class="fu"><a href="reference/install_skill.html">install_skill</a></span><span class="op">(</span></span>
+<span>  <span class="st">"https://github.com/posit-dev/skills/blob/main/r-lib/r-cli-app/SKILL.md"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; ✔ Installed "r-cli-app" to .agents/skills/r-cli-app</span></span>
+<span><span class="co">#&gt; ℹ Codex and other agents read .agents/skills/ directly.</span></span>
+<span><span class="co">#&gt; ✔ Copied to "Claude Code" (.claude/skills)</span></span></code></pre></div>
+<p>The skill is installed in two places: <code>.agents/skills/&lt;skill&gt;</code>, which Codex and a growing number of agents read directly, and <code>.claude/skills/&lt;skill&gt;</code> for Claude Code. Nothing else to configure.</p>
+</div>
+<div class="section level2">
+<h2 id="this-project-or-every-project">This project or every project<a class="anchor" aria-label="anchor" href="#this-project-or-every-project"></a>
+</h2>
+<p>By default a skill is installed into the current working directory, so it travels with the project. Pass <code>scope = "user"</code> to install it into your home folder instead, where every project on the computer can use it:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">ally</span><span class="fu">::</span><span class="fu"><a href="reference/install_skill.html">install_skill</a></span><span class="op">(</span><span class="st">"posit-dev/skills/r-lib/r-cli-app"</span>, scope <span class="op">=</span> <span class="st">"user"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ✔ Installed "r-cli-app" to ~/.agents/skills/r-cli-app</span></span>
+<span><span class="co">#&gt; ℹ Every project on this computer can use skills in ~/.agents/skills/.</span></span>
+<span><span class="co">#&gt; ✔ Copied to "Claude Code" (~/.claude/skills)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="how-it-works">How it works<a class="anchor" aria-label="anchor" href="#how-it-works"></a>
@@ -90,25 +99,23 @@
 <tbody>
 <tr>
 <td><code>.agents/skills/&lt;skill&gt;/</code></td>
-<td>Real directory — canonical copy. Codex reads it natively.</td>
+<td>The canonical copy. Codex and other agents read it directly.</td>
 </tr>
 <tr>
-<td><code>.claude/skills/&lt;skill&gt;</code></td>
-<td>Symlink → <code>.agents/skills/&lt;skill&gt;</code>. So Claude Code sees the same content.</td>
+<td><code>.claude/skills/&lt;skill&gt;/</code></td>
+<td>A second copy for Claude Code.</td>
 </tr>
 </tbody>
 </table>
-<p>If symlinks aren’t supported (typically Windows without developer mode), {ally} falls back to copying and tells you it did so. You can also force copying with <code>copy = TRUE</code>.</p>
+<p>With <code>scope = "user"</code> the same two folders sit in your home directory.</p>
+<p>Prefer a single set of files? Pass <code>link = TRUE</code> and {ally} puts a relative symlink at <code>.claude/skills/&lt;skill&gt;</code> pointing back to the canonical copy instead of a second copy. Where symlinks aren’t supported (typically Windows without developer mode) it falls back to copying and tells you so.</p>
+<p>Skills are fetched from the repository’s zip archive on GitHub: a single download that needs no token and never counts against the GitHub API rate limit, so a room full of people on one network can install at once. Public repositories only.</p>
 </div>
 <div class="section level2">
 <h2 id="sources">Sources<a class="anchor" aria-label="anchor" href="#sources"></a>
 </h2>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># GitHub shorthand: owner/repo/path/to/skill[@ref]</span></span>
-<span><span class="fu"><a href="reference/install_skill.html">install_skill</a></span><span class="op">(</span><span class="st">"ab604/claude-code-r-skills/.claude/skills/r-style-guide"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/install_skill.html">install_skill</a></span><span class="op">(</span><span class="st">"owner/repo/skills/my-skill@dev"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Full GitHub URL — paste it straight from the browser</span></span>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Full GitHub URL, pasted straight from the browser</span></span>
 <span><span class="fu"><a href="reference/install_skill.html">install_skill</a></span><span class="op">(</span></span>
 <span>  <span class="st">"https://github.com/posit-dev/skills/tree/main/posit-dev/critical-code-reviewer"</span></span>
 <span><span class="op">)</span></span>
@@ -116,25 +123,26 @@
 <span><span class="fu"><a href="reference/install_skill.html">install_skill</a></span><span class="op">(</span></span>
 <span>  <span class="st">"https://github.com/posit-dev/skills/blob/main/posit-dev/critical-code-reviewer/SKILL.md"</span></span>
 <span><span class="op">)</span></span>
+<span><span class="co"># A repository whose SKILL.md sits at the top level is named after the repository</span></span>
+<span><span class="fu"><a href="reference/install_skill.html">install_skill</a></span><span class="op">(</span><span class="st">"https://github.com/statzhero/tidy-r-skill"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Local path — handy for skill development</span></span>
+<span><span class="co"># GitHub shorthand: owner/repo/path/to/skill[@ref]</span></span>
+<span><span class="fu"><a href="reference/install_skill.html">install_skill</a></span><span class="op">(</span><span class="st">"ab604/claude-code-r-skills/.claude/skills/r-style-guide"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/install_skill.html">install_skill</a></span><span class="op">(</span><span class="st">"owner/repo/skills/my-skill@dev"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Local path, handy for skill development</span></span>
 <span><span class="fu"><a href="reference/install_skill.html">install_skill</a></span><span class="op">(</span><span class="st">"~/my-skills/r-style-guide"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="other-functions">Other functions<a class="anchor" aria-label="anchor" href="#other-functions"></a>
 </h2>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/installed_skills.html">installed_skills</a></span><span class="op">(</span><span class="op">)</span>                <span class="co"># list everything in .agents/skills/</span></span>
 <span><span class="fu"><a href="reference/update_skill.html">update_skill</a></span><span class="op">(</span><span class="st">"r-style-guide"</span><span class="op">)</span>     <span class="co"># re-fetch from the original source</span></span>
-<span><span class="fu"><a href="reference/link_skills.html">link_skills</a></span><span class="op">(</span><span class="op">)</span>                     <span class="co"># re-create the Claude symlinks</span></span>
-<span><span class="fu"><a href="reference/remove_skill.html">remove_skill</a></span><span class="op">(</span><span class="st">"r-style-guide"</span><span class="op">)</span>     <span class="co"># delete canonical copy + Claude symlink</span></span>
-<span><span class="fu"><a href="reference/supported_agents.html">supported_agents</a></span><span class="op">(</span><span class="op">)</span>                <span class="co"># introspect agents that need a symlink</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="github-authentication">GitHub authentication<a class="anchor" aria-label="anchor" href="#github-authentication"></a>
-</h2>
-<p>Public-repo downloads use unauthenticated GitHub API requests (60/hour), which is plenty for most workflows. If you hit a rate limit or need to install from a private repo, set <code>GITHUB_PAT</code> in your <code>.Renviron</code>:</p>
-<pre><code><span><span class="va">GITHUB_PAT</span><span class="op">=</span><span class="va">your_token_here</span></span></code></pre>
+<span><span class="fu"><a href="reference/link_skills.html">link_skills</a></span><span class="op">(</span><span class="op">)</span>                     <span class="co"># refresh the Claude Code copies</span></span>
+<span><span class="fu"><a href="reference/remove_skill.html">remove_skill</a></span><span class="op">(</span><span class="st">"r-style-guide"</span><span class="op">)</span>     <span class="co"># delete canonical copy + Claude copy</span></span>
+<span><span class="fu"><a href="reference/supported_agents.html">supported_agents</a></span><span class="op">(</span><span class="op">)</span>                <span class="co"># introspect agents that get their own copy</span></span></code></pre></div>
+<p>Every one of these takes the same <code>scope</code> argument as <code><a href="reference/install_skill.html">install_skill()</a></code>.</p>
 </div>
 <div class="section level2">
 <h2 id="code-of-conduct">Code of Conduct<a class="anchor" aria-label="anchor" href="#code-of-conduct"></a>
@@ -184,7 +192,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>
