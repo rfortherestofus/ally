@@ -150,15 +150,15 @@
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_dir.html" class="external-link">with_dir</a></span><span class="op">(</span><span class="va">project</span>, <span class="fu"><a href="../reference/install_skill.html">install_skill</a></span><span class="op">(</span><span class="va">skill</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✔ Installed "r-style-guide" to '/tmp/RtmpGOBgVu/my-project/.agents/skills/r-style-guide'</span></span>
+<span><span class="co">#&gt; ✔ Installed "r-style-guide" to '/tmp/Rtmpw6kGpX/my-project/.agents/skills/r-style-guide'</span></span>
 <span><span class="co">#&gt; ℹ Codex and other agents read '.agents/skills/' directly.</span></span>
-<span><span class="co">#&gt; ✔ Copied to "Claude Code" ('/tmp/RtmpGOBgVu/my-project/.claude/skills')</span></span></code></pre></div>
+<span><span class="co">#&gt; ✔ Copied to "Claude Code" ('/tmp/Rtmpw6kGpX/my-project/.claude/skills')</span></span></code></pre></div>
 </div>
 <p>Both copies are now in place:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/dir_tree.html" class="external-link">dir_tree</a></span><span class="op">(</span><span class="va">project</span>, all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; /tmp/RtmpGOBgVu/my-project</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpw6kGpX/my-project</span></span>
 <span><span class="co">#&gt; ├── .agents</span></span>
 <span><span class="co">#&gt; │   └── skills</span></span>
 <span><span class="co">#&gt; │       └── r-style-guide</span></span>
@@ -180,8 +180,8 @@
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_dir.html" class="external-link">with_dir</a></span><span class="op">(</span><span class="va">project</span>, <span class="fu"><a href="../reference/remove_skill.html">remove_skill</a></span><span class="op">(</span><span class="st">"r-style-guide"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✔ Removed copy at '/tmp/RtmpGOBgVu/my-project/.claude/skills/r-style-guide'</span></span>
-<span><span class="co">#&gt; ✔ Removed canonical copy at '/tmp/RtmpGOBgVu/my-project/.agents/skills/r-style-guide'</span></span></code></pre></div>
+<span><span class="co">#&gt; ✔ Removed copy at '/tmp/Rtmpw6kGpX/my-project/.claude/skills/r-style-guide'</span></span>
+<span><span class="co">#&gt; ✔ Removed canonical copy at '/tmp/Rtmpw6kGpX/my-project/.agents/skills/r-style-guide'</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="this-project-or-every-project">This project or every project<a class="anchor" aria-label="anchor" href="#this-project-or-every-project"></a>
 </h2>
@@ -250,7 +250,7 @@
 </h2>
 <ul>
 <li>
-<a href="https://rfortherestofus.com/ally" class="external-link">Ally</a> from R for the Rest of Us offers a curated collection of skills for R users working with AI. Each one comes with the link to paste into <code><a href="../reference/install_skill.html">install_skill()</a></code>.</li>
+<a href="https://rfortherestofus.com/ally" class="external-link">Ally</a> from R for the Rest of Us will offer a curated collection of skills for R users working with AI, each with the link to paste into <code><a href="../reference/install_skill.html">install_skill()</a></code>. Ally is not yet open for registration, so the collection is not available today, but it is coming soon.</li>
 <li>
 <a href="https://github.com/posit-dev/skills" class="external-link">posit-dev/skills</a> is Posit’s collection, covering R packages, Shiny, Quarto, and more.</li>
 <li>Write your own. A folder with a <code>SKILL.md</code> is all it takes, and <code><a href="../reference/install_skill.html">install_skill()</a></code> accepts a local path while you iterate.</li>

@@ -101,9 +101,9 @@ just for this call:
 ``` r
 
 withr::with_dir(project, install_skill(skill))
-#> ✔ Installed "r-style-guide" to '/tmp/RtmpGOBgVu/my-project/.agents/skills/r-style-guide'
+#> ✔ Installed "r-style-guide" to '/tmp/Rtmpw6kGpX/my-project/.agents/skills/r-style-guide'
 #> ℹ Codex and other agents read '.agents/skills/' directly.
-#> ✔ Copied to "Claude Code" ('/tmp/RtmpGOBgVu/my-project/.claude/skills')
+#> ✔ Copied to "Claude Code" ('/tmp/Rtmpw6kGpX/my-project/.claude/skills')
 ```
 
 Both copies are now in place:
@@ -111,7 +111,7 @@ Both copies are now in place:
 ``` r
 
 fs::dir_tree(project, all = TRUE)
-#> /tmp/RtmpGOBgVu/my-project
+#> /tmp/Rtmpw6kGpX/my-project
 #> ├── .agents
 #> │   └── skills
 #> │       └── r-style-guide
@@ -140,8 +140,8 @@ deletes both copies:
 ``` r
 
 withr::with_dir(project, remove_skill("r-style-guide"))
-#> ✔ Removed copy at '/tmp/RtmpGOBgVu/my-project/.claude/skills/r-style-guide'
-#> ✔ Removed canonical copy at '/tmp/RtmpGOBgVu/my-project/.agents/skills/r-style-guide'
+#> ✔ Removed copy at '/tmp/Rtmpw6kGpX/my-project/.claude/skills/r-style-guide'
+#> ✔ Removed canonical copy at '/tmp/Rtmpw6kGpX/my-project/.agents/skills/r-style-guide'
 ```
 
 ## This project or every project
@@ -253,9 +253,11 @@ to copying and tells you so.
 ## Where to find skills
 
 - [Ally](https://rfortherestofus.com/ally) from R for the Rest of Us
-  offers a curated collection of skills for R users working with AI.
-  Each one comes with the link to paste into
+  will offer a curated collection of skills for R users working with AI,
+  each with the link to paste into
   [`install_skill()`](https://rfortherestofus.github.io/ally/reference/install_skill.md).
+  Ally is not yet open for registration, so the collection is not
+  available today, but it is coming soon.
 - [posit-dev/skills](https://github.com/posit-dev/skills) is Posit’s
   collection, covering R packages, Shiny, Quarto, and more.
 - Write your own. A folder with a `SKILL.md` is all it takes, and
