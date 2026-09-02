@@ -14,7 +14,7 @@ home:
   title: "ally: R-native tooling for AI coding assistants"
   description: >
     Companion package to Ally, a subscription product from R for the Rest of
-    Us aimed at advanced R users navigating the AI transition.
+    Us aimed at R users navigating the AI transition.
 
 navbar:
   structure:
