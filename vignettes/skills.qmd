@@ -186,6 +186,6 @@ Prefer a single set of files? Pass `link = TRUE` to `install_skill()`, `update_s
 
 ## Where to find skills
 
-- [Ally](https://rfortherestofus.com/ally) from R for the Rest of Us offers a curated collection of skills for R users working with AI. Each one comes with the link to paste into `install_skill()`.
+- [Ally](https://rfortherestofus.com/ally) from R for the Rest of Us will offer a curated collection of skills for R users working with AI, each with the link to paste into `install_skill()`. Ally is not yet open for registration, so the collection is not available today, but it is coming soon.
 - [posit-dev/skills](https://github.com/posit-dev/skills) is Posit's collection, covering R packages, Shiny, Quarto, and more.
 - Write your own. A folder with a `SKILL.md` is all it takes, and `install_skill()` accepts a local path while you iterate.
