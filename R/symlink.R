@@ -1,18 +1,19 @@
-#' Create a relative symlink, falling back to copying on failure
+#' Copy a folder, or link it relatively when asked
 #'
-#' Links `link` to `target` with a relative path, so the link keeps working when the
-#' project is moved, cloned or committed. If the link cannot be created (typically
-#' Windows without developer mode), the folder is copied instead and a message says so.
+#' By default copies `target` to `link`. With `force_copy = FALSE` it links instead,
+#' with a relative path so the link keeps working when the project is moved, cloned or
+#' committed. If the link cannot be created (typically Windows without developer mode),
+#' the folder is copied instead and a message says so.
 #'
 #' @param target Path of the folder the link should point to.
 #' @param link   Path of the link to create.
-#' @param force_copy If `TRUE`, skip the link attempt and copy directly.
+#' @param force_copy If `TRUE` (the default), copy rather than link.
 #'
 #' @return Invisibly, a list with `link`, `target` (the relative path used) and `mode`
 #'   ("symlink" or "copy").
 #' @keywords internal
 #' @noRd
-link_or_copy <- function(target, link, force_copy = FALSE) {
+link_or_copy <- function(target, link, force_copy = TRUE) {
   fs::dir_create(fs::path_dir(link), recurse = TRUE)
 
   if (fs::link_exists(link)) {

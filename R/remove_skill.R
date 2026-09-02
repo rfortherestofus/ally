@@ -1,7 +1,7 @@
 #' Remove an installed skill
 #'
 #' Deletes the canonical copy at `.agents/skills/<skill>/` and removes the
-#' link (or copy) at `.claude/skills/<skill>`.
+#' copy (or link) at `.claude/skills/<skill>`.
 #'
 #' @param skill Name of the installed skill.
 #' @inheritParams install_skill

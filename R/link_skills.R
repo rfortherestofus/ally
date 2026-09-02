@@ -1,16 +1,16 @@
-#' Re-link installed skills to Claude Code
+#' Refresh the Claude Code copies of installed skills
 #'
 #' Walks every skill in `.agents/skills/` and (re)creates the
-#' `.claude/skills/<skill>` link for each. Useful if a link was
-#' deleted by hand. Codex reads `.agents/skills/` directly, so no work is
-#' needed for it.
+#' `.claude/skills/<skill>` copy, or link with `link = TRUE`, for each.
+#' Useful after editing a skill by hand or deleting a copy. Codex reads
+#' `.agents/skills/` directly, so no work is needed for it.
 #'
 #' @inheritParams install_skill
 #'
 #' @return Invisibly, a list with one entry per skill describing the links
 #'   created or refreshed.
 #' @export
-link_skills <- function(scope = c("project", "user"), copy = FALSE) {
+link_skills <- function(scope = c("project", "user"), link = FALSE) {
   scope <- match.arg(scope)
   root <- skills_root(scope)
   canonical_root <- canonical_skills_dir(root)
@@ -34,7 +34,7 @@ link_skills <- function(scope = c("project", "user"), copy = FALSE) {
       skill_dir = skill_dir,
       skill_name = skill,
       root = root,
-      copy = copy
+      link = link
     )
   }
   invisible(results)

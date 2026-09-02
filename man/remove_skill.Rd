@@ -17,5 +17,5 @@ Invisibly \code{TRUE}.
 }
 \description{
 Deletes the canonical copy at \verb{.agents/skills/<skill>/} and removes the
-link (or copy) at \verb{.claude/skills/<skill>}.
+copy (or link) at \verb{.claude/skills/<skill>}.
 }

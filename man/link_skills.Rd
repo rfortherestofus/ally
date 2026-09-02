@@ -2,17 +2,19 @@
 % Please edit documentation in R/link_skills.R
 \name{link_skills}
 \alias{link_skills}
-\title{Re-link installed skills to Claude Code}
+\title{Refresh the Claude Code copies of installed skills}
 \usage{
-link_skills(scope = c("project", "user"), copy = FALSE)
+link_skills(scope = c("project", "user"), link = FALSE)
 }
 \arguments{
 \item{scope}{\code{"project"} installs into the current working directory,
 \code{"user"} into your home folder.}
 
-\item{copy}{If \code{TRUE}, copy the skill into agent folders instead of
-linking. Links are tried first when \code{FALSE}; this only forces the
-fallback up front (useful on Windows without developer mode).}
+\item{link}{If \code{TRUE}, put a relative symbolic link in each agent folder
+pointing at the \code{.agents/skills} copy instead of a second copy, so there is a
+single set of files to edit. Falls back to copying where links can't be
+created (typically Windows without developer mode). The default, \code{FALSE},
+copies.}
 }
 \value{
 Invisibly, a list with one entry per skill describing the links
@@ -20,7 +22,7 @@ created or refreshed.
 }
 \description{
 Walks every skill in \verb{.agents/skills/} and (re)creates the
-\verb{.claude/skills/<skill>} link for each. Useful if a link was
-deleted by hand. Codex reads \verb{.agents/skills/} directly, so no work is
-needed for it.
+\verb{.claude/skills/<skill>} copy, or link with \code{link = TRUE}, for each.
+Useful after editing a skill by hand or deleting a copy. Codex reads
+\verb{.agents/skills/} directly, so no work is needed for it.
 }

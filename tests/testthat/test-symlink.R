@@ -5,9 +5,23 @@ test_that("link_or_copy creates a symlink when possible", {
   writeLines("hi", fs::path(target, "x.md"))
 
   link <- fs::path(tmp, "link")
-  res <- link_or_copy(target, link)
+  res <- link_or_copy(target, link, force_copy = FALSE)
 
   expect_true(res$mode %in% c("symlink", "copy"))
+  expect_true(fs::file_exists(fs::path(link, "x.md")))
+})
+
+test_that("link_or_copy copies by default", {
+  tmp <- withr::local_tempdir()
+  target <- fs::path(tmp, "target")
+  fs::dir_create(target)
+  writeLines("hi", fs::path(target, "x.md"))
+
+  link <- fs::path(tmp, "link")
+  res <- link_or_copy(target, link)
+
+  expect_equal(res$mode, "copy")
+  expect_false(fs::link_exists(link))
   expect_true(fs::file_exists(fs::path(link, "x.md")))
 })
 
@@ -18,7 +32,7 @@ test_that("links are relative, so a moved project keeps working", {
   writeLines("hi", fs::path(target, "SKILL.md"))
 
   link <- fs::path(tmp, ".claude/skills/demo")
-  res <- link_or_copy(target, link)
+  res <- link_or_copy(target, link, force_copy = FALSE)
   skip_if_not(res$mode == "symlink", "symlinks unavailable here")
 
   expect_equal(as.character(fs::link_path(link)), "../../.agents/skills/demo")
