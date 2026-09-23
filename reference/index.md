@@ -15,6 +15,15 @@ Install, list, update, and remove agent skills.
 - [`installed_skills()`](https://rfortherestofus.github.io/ally/reference/installed_skills.md)
   : List installed skills
 
+## Agent instructions
+
+See and edit the instruction files your agents read.
+
+- [`list_agent_instructions()`](https://rfortherestofus.github.io/ally/reference/list_agent_instructions.md)
+  : List agent instruction files
+- [`edit_agent_instructions()`](https://rfortherestofus.github.io/ally/reference/edit_agent_instructions.md)
+  : Open an agent instruction file
+
 ## Supported agents
 
 Introspect the agents that ally installs skills for.

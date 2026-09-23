@@ -40,7 +40,8 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/skills.html">Working with skills</a></li>
+<li><a class="dropdown-item" href="articles/agent-instructions.html">Agent instructions</a></li>
+    <li><a class="dropdown-item" href="articles/skills.html">Working with skills</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
@@ -115,6 +116,27 @@
 <p><code><a href="reference/install_skill.html">install_skill()</a></code> records a fingerprint of each skill’s files. If you edit a skill, <code><a href="reference/update_skill.html">update_skill()</a></code>, <code><a href="reference/install_skill.html">install_skill()</a></code> and <code><a href="reference/link_skills.html">link_skills()</a></code> stop rather than overwrite your changes, and tell you which files changed. Pass <code>force = TRUE</code> to overwrite them anyway.</p>
 </div>
 <div class="section level2">
+<h2 id="agent-instructions">Agent instructions<a class="anchor" aria-label="anchor" href="#agent-instructions"></a>
+</h2>
+<p>Each AI coding assistant reads its own instruction file, where you tell it how you like to work: <code>CLAUDE.md</code> for Claude Code, <code>AGENTS.md</code> for Codex and Posit Assistant, some in your home folder and some in the project. <code><a href="reference/list_agent_instructions.html">list_agent_instructions()</a></code> shows which ones you have, and <code><a href="reference/edit_agent_instructions.html">edit_agent_instructions()</a></code> opens the one you pick in Positron or RStudio:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">ally</span><span class="fu">::</span><span class="fu"><a href="reference/list_agent_instructions.html">list_agent_instructions</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ── Agent instructions ───────────────────────────────────────────</span></span>
+<span><span class="co">#&gt;</span></span>
+<span><span class="co">#&gt; ── User (all projects) ──</span></span>
+<span><span class="co">#&gt;</span></span>
+<span><span class="co">#&gt; 1: Claude Code                          ~/.claude/CLAUDE.md           24 lines</span></span>
+<span><span class="co">#&gt; 2: Posit Assistant                      ~/.posit/assistant/AGENTS.md  not found</span></span>
+<span><span class="co">#&gt;</span></span>
+<span><span class="co">#&gt; ── Project (report) ──</span></span>
+<span><span class="co">#&gt;</span></span>
+<span><span class="co">#&gt; 3: Codex, Posit Assistant, Claude Code  AGENTS.md                     12 lines</span></span>
+<span><span class="co">#&gt; 4: Claude Code                          CLAUDE.md                     not found</span></span>
+<span></span>
+<span><span class="fu">ally</span><span class="fu">::</span><span class="fu"><a href="reference/edit_agent_instructions.html">edit_agent_instructions</a></span><span class="op">(</span><span class="op">)</span>          <span class="co"># pick from the numbered list</span></span>
+<span><span class="fu">ally</span><span class="fu">::</span><span class="fu"><a href="reference/edit_agent_instructions.html">edit_agent_instructions</a></span><span class="op">(</span><span class="st">"claude"</span><span class="op">)</span>  <span class="co"># or name the agent</span></span></code></pre></div>
+</div>
+<div class="section level2">
 <h2 id="how-it-works">How it works<a class="anchor" aria-label="anchor" href="#how-it-works"></a>
 </h2>
 <table class="table">
@@ -144,7 +166,7 @@
 <div class="section level2">
 <h2 id="sources">Sources<a class="anchor" aria-label="anchor" href="#sources"></a>
 </h2>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Full GitHub URL, pasted straight from the browser</span></span>
 <span><span class="fu"><a href="reference/install_skill.html">install_skill</a></span><span class="op">(</span></span>
 <span>  <span class="st">"https://github.com/posit-dev/skills/tree/main/posit-dev/critical-code-reviewer"</span></span>
@@ -166,7 +188,7 @@
 <div class="section level2">
 <h2 id="other-functions">Other functions<a class="anchor" aria-label="anchor" href="#other-functions"></a>
 </h2>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/installed_skills.html">installed_skills</a></span><span class="op">(</span><span class="op">)</span>                <span class="co"># every skill, with its source and dates</span></span>
 <span><span class="fu"><a href="reference/update_skill.html">update_skill</a></span><span class="op">(</span><span class="st">"r-style-guide"</span><span class="op">)</span>     <span class="co"># re-fetch from the original source</span></span>
 <span><span class="fu"><a href="reference/link_skills.html">link_skills</a></span><span class="op">(</span><span class="op">)</span>                     <span class="co"># refresh the Claude Code copies</span></span>

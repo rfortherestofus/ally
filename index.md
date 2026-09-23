@@ -84,6 +84,36 @@ and
 stop rather than overwrite your changes, and tell you which files
 changed. Pass `force = TRUE` to overwrite them anyway.
 
+## Agent instructions
+
+Each AI coding assistant reads its own instruction file, where you tell
+it how you like to work: `CLAUDE.md` for Claude Code, `AGENTS.md` for
+Codex and Posit Assistant, some in your home folder and some in the
+project.
+[`list_agent_instructions()`](https://rfortherestofus.github.io/ally/reference/list_agent_instructions.md)
+shows which ones you have, and
+[`edit_agent_instructions()`](https://rfortherestofus.github.io/ally/reference/edit_agent_instructions.md)
+opens the one you pick in Positron or RStudio:
+
+``` r
+
+ally::list_agent_instructions()
+#> ── Agent instructions ───────────────────────────────────────────
+#>
+#> ── User (all projects) ──
+#>
+#> 1: Claude Code                          ~/.claude/CLAUDE.md           24 lines
+#> 2: Posit Assistant                      ~/.posit/assistant/AGENTS.md  not found
+#>
+#> ── Project (report) ──
+#>
+#> 3: Codex, Posit Assistant, Claude Code  AGENTS.md                     12 lines
+#> 4: Claude Code                          CLAUDE.md                     not found
+
+ally::edit_agent_instructions()          # pick from the numbered list
+ally::edit_agent_instructions("claude")  # or name the agent
+```
+
 ## How it works
 
 | Path | What it is |

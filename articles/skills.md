@@ -101,9 +101,9 @@ just for this call:
 ``` r
 
 withr::with_dir(project, install_skill(skill))
-#> ✔ Installed "r-style-guide" to '/tmp/RtmpVKX3M0/my-project/.agents/skills/r-style-guide'
+#> ✔ Installed "r-style-guide" to '/tmp/RtmpUpCAQd/my-project/.agents/skills/r-style-guide'
 #> ℹ Codex and other agents read '.agents/skills/' directly.
-#> ✔ Copied to "Claude Code" ('/tmp/RtmpVKX3M0/my-project/.claude/skills')
+#> ✔ Copied to "Claude Code" ('/tmp/RtmpUpCAQd/my-project/.claude/skills')
 ```
 
 Both copies are now in place:
@@ -111,7 +111,7 @@ Both copies are now in place:
 ``` r
 
 fs::dir_tree(project, all = TRUE)
-#> /tmp/RtmpVKX3M0/my-project
+#> /tmp/RtmpUpCAQd/my-project
 #> ├── .agents
 #> │   └── skills
 #> │       └── r-style-guide
@@ -134,7 +134,7 @@ withr::with_dir(project, installed_skills(scope = "project"))
 #> # A tibble: 1 × 10
 #>   name          description      installed_by installed_from installed          
 #>   <chr>         <chr>            <chr>        <chr>          <dttm>             
-#> 1 r-style-guide House style for… ally         /tmp/RtmpVKX3… 2026-09-23 19:17:48
+#> 1 r-style-guide House style for… ally         /tmp/RtmpUpCA… 2026-09-23 19:38:19
 #> # ℹ 5 more variables: updated_on_github <dttm>, edited <lgl>, scope <chr>,
 #> #   found_in <chr>, path <chr>
 ```
@@ -146,8 +146,8 @@ deletes both copies:
 ``` r
 
 withr::with_dir(project, remove_skill("r-style-guide"))
-#> ✔ Removed copy at '/tmp/RtmpVKX3M0/my-project/.claude/skills/r-style-guide'
-#> ✔ Removed canonical copy at '/tmp/RtmpVKX3M0/my-project/.agents/skills/r-style-guide'
+#> ✔ Removed copy at '/tmp/RtmpUpCAQd/my-project/.claude/skills/r-style-guide'
+#> ✔ Removed canonical copy at '/tmp/RtmpUpCAQd/my-project/.agents/skills/r-style-guide'
 ```
 
 ## This project or every project

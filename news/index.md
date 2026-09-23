@@ -2,6 +2,20 @@
 
 ## ally 0.1.0
 
+- New
+  [`list_agent_instructions()`](https://rfortherestofus.github.io/ally/reference/list_agent_instructions.md)
+  shows the instruction files your AI coding assistants read
+  (`CLAUDE.md`, `AGENTS.md` and friends), for Claude Code, Codex and
+  Posit Assistant, in your home folder and the current project. It notes
+  when a project’s `CLAUDE.md` keeps Claude Code from reading its
+  `AGENTS.md`.
+
+- New
+  [`edit_agent_instructions()`](https://rfortherestofus.github.io/ally/reference/edit_agent_instructions.md)
+  opens one of those files in Positron or RStudio, from a numbered list
+  or by naming the agent. It offers to create a file that doesn’t exist
+  yet and never changes existing ones.
+
 - [`installed_skills()`](https://rfortherestofus.github.io/ally/reference/installed_skills.md)
   now lists every skill an agent can load, not just the ones in
   `.agents/skills/`. It also looks in `.claude/skills/`,
