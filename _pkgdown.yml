@@ -30,6 +30,11 @@ reference:
       - remove_skill
       - link_skills
       - installed_skills
+  - title: Agent instructions
+    desc: See and edit the instruction files your agents read.
+    contents:
+      - list_agent_instructions
+      - edit_agent_instructions
   - title: Supported agents
     desc: Introspect the agents that ally installs skills for.
     contents:
