@@ -4,21 +4,29 @@
 \alias{installed_skills}
 \title{List installed skills}
 \usage{
-installed_skills(scope = c("project", "user"))
+installed_skills(scope = c("project", "user"), check_github = TRUE)
 }
 \arguments{
 \item{scope}{Where to look: \code{"project"} (the working directory), \code{"user"}
 (your home folder), or both, the default.}
+
+\item{check_github}{If \code{TRUE}, the default, look up when each GitHub skill
+last changed. Set to \code{FALSE} to skip the lookup, when offline for instance.}
 }
 \value{
 A tibble with one row per skill and columns:
 \itemize{
 \item \code{name}: the skill's folder name.
-\item \code{description}: the \code{description} from the \code{SKILL.md} header, which agents
-read to decide when to use the skill.
-\item \code{source}: where the skill came from, such as
-\code{"posit-dev/skills/r-lib/r-cli-app"}, or \code{NA} if nothing recorded it.
-\item \code{installed_by}: \code{"ally"}, \code{"skills CLI"}, or \code{NA}.
+\item \code{description}: the start of the \code{description} from the \code{SKILL.md}
+header, which agents read to decide when to use the skill. The full text
+is in the \code{SKILL.md} at \code{path}.
+\item \code{installed_by}: \code{"ally"}, \code{"skills CLI"}, or \code{NA} when nothing recorded it.
+\item \code{installed_from}: the GitHub repository and folder, local path or link
+target the skill was installed from, such as
+\code{"posit-dev/skills/r-lib/r-cli-app"}, or \code{NA} when nothing recorded it.
+\item \code{installed}: the date this copy was installed or last updated.
+\item \code{updated_on_github}: the date the skill's folder last changed on GitHub,
+or \code{NA} for skills that did not come from GitHub.
 \item \code{scope}: \code{"project"} or \code{"user"}.
 \item \code{found_in}: the folders that hold the skill, such as \code{".agents, .claude"}.
 \item \code{path}: the skill's folder, preferring the \verb{.agents/skills/} copy.
@@ -36,17 +44,24 @@ A skill that sits in several folders (the \verb{.agents/skills/} copy and the
 Claude Code copy ally makes, for instance) is listed once, with every folder
 it was found in.
 
-The source comes from the first of these that has one: the
-\code{.ally-source.json} that \code{\link[=install_skill]{install_skill()}} writes, the lockfile the \code{skills}
-command-line tool (\verb{npx skills}) keeps at \code{.agents/.skill-lock.json}, or the
-target of a link that points somewhere else. Skills copied in by hand have no
-recorded source.
+What installed a skill, where from, and when come from the first of these
+that records it: the \code{.ally-source.json} that \code{\link[=install_skill]{install_skill()}} writes, or the
+lockfile the \code{skills} command-line tool (\verb{npx skills}) keeps at
+\code{.agents/.skill-lock.json}. A skill that is a link to a folder elsewhere shows
+that folder as where it came from. Skills copied in by hand have none of this,
+so their install date is the date their folder was created.
+
+For skills installed from GitHub, \code{installed_skills()} also looks up when the
+skill's folder last changed there, using the repository's public commit feed.
+That needs no token and does not count against the GitHub API rate limit. If
+the date is newer than \code{installed}, \code{\link[=update_skill]{update_skill()}} will fetch a newer
+version.
 
 Skills that come from Claude Code plugins live elsewhere and are not listed.
 }
 \examples{
 \dontrun{
 installed_skills()
-installed_skills(scope = "user")
+installed_skills(scope = "user", check_github = FALSE)
 }
 }

@@ -68,3 +68,54 @@ unzip_archive <- function(archive) {
 
   top
 }
+
+#' The date a skill folder last changed on GitHub
+#'
+#' Reads the repository's commit feed for the folder,
+#' `github.com/<owner>/<repo>/commits/<ref>/<path>.atom`, which needs no token and is
+#' not counted against the GitHub API rate limit. Returns `NA` when the feed cannot be
+#' read, when offline for instance.
+#'
+#' @keywords internal
+#' @noRd
+github_last_changed <- function(owner, repo, path, ref = NA_character_) {
+  ref <- if (is.na(ref) || !nzchar(ref)) "HEAD" else ref
+  url <- paste0(
+    "https://github.com/", owner, "/", repo, "/commits/", ref,
+    if (nzchar(path)) paste0("/", utils::URLencode(path)) else "",
+    ".atom"
+  )
+  feed <- withr::local_tempfile(fileext = ".atom")
+  withr::local_options(timeout = 10)
+
+  ok <- tryCatch(
+    {
+      utils::download.file(url, feed, quiet = TRUE)
+      TRUE
+    },
+    error = function(e) FALSE,
+    warning = function(w) FALSE
+  )
+  if (!ok) {
+    return(as.Date(NA))
+  }
+  atom_last_updated(readLines(feed, warn = FALSE, encoding = "UTF-8"))
+}
+
+#' The `<updated>` date of the newest entry in a GitHub commit feed
+#'
+#' @keywords internal
+#' @noRd
+atom_last_updated <- function(lines) {
+  text <- paste(lines, collapse = "\n")
+  entry_start <- regexpr("<entry>", text, fixed = TRUE)
+  if (entry_start < 0) {
+    return(as.Date(NA))
+  }
+  entry <- substring(text, entry_start)
+  updated <- regmatches(entry, regexpr("<updated>[^<]+</updated>", entry))
+  if (length(updated) == 0) {
+    return(as.Date(NA))
+  }
+  timestamp_date(gsub("</?updated>", "", updated))
+}
