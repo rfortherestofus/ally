@@ -101,9 +101,9 @@ just for this call:
 ``` r
 
 withr::with_dir(project, install_skill(skill))
-#> ✔ Installed "r-style-guide" to '/tmp/Rtmp6uQ6c9/my-project/.agents/skills/r-style-guide'
+#> ✔ Installed "r-style-guide" to '/tmp/Rtmpd4PIDA/my-project/.agents/skills/r-style-guide'
 #> ℹ Codex and other agents read '.agents/skills/' directly.
-#> ✔ Copied to "Claude Code" ('/tmp/Rtmp6uQ6c9/my-project/.claude/skills')
+#> ✔ Copied to "Claude Code" ('/tmp/Rtmpd4PIDA/my-project/.claude/skills')
 ```
 
 Both copies are now in place:
@@ -111,7 +111,7 @@ Both copies are now in place:
 ``` r
 
 fs::dir_tree(project, all = TRUE)
-#> /tmp/Rtmp6uQ6c9/my-project
+#> /tmp/Rtmpd4PIDA/my-project
 #> ├── .agents
 #> │   └── skills
 #> │       └── r-style-guide
@@ -135,10 +135,11 @@ project:
 
 withr::with_dir(project, installed_skills(scope = "project"))
 #> # A tibble: 1 × 9
-#>   name      description installed_by installed_from installed  updated_on_github
-#>   <chr>     <chr>       <chr>        <chr>          <date>     <date>           
-#> 1 r-style-… House styl… ally         /tmp/Rtmp6uQ6… 2026-09-23 NA               
-#> # ℹ 3 more variables: scope <chr>, found_in <chr>, path <chr>
+#>   name          description      installed_by installed_from installed          
+#>   <chr>         <chr>            <chr>        <chr>          <dttm>             
+#> 1 r-style-guide House style for… ally         /tmp/Rtmpd4PI… 2026-09-23 19:02:48
+#> # ℹ 4 more variables: updated_on_github <dttm>, scope <chr>, found_in <chr>,
+#> #   path <chr>
 ```
 
 Leave out `scope` to list the project’s skills and the ones in your home
@@ -151,8 +152,8 @@ deletes both copies:
 ``` r
 
 withr::with_dir(project, remove_skill("r-style-guide"))
-#> ✔ Removed copy at '/tmp/Rtmp6uQ6c9/my-project/.claude/skills/r-style-guide'
-#> ✔ Removed canonical copy at '/tmp/Rtmp6uQ6c9/my-project/.agents/skills/r-style-guide'
+#> ✔ Removed copy at '/tmp/Rtmpd4PIDA/my-project/.claude/skills/r-style-guide'
+#> ✔ Removed canonical copy at '/tmp/Rtmpd4PIDA/my-project/.agents/skills/r-style-guide'
 ```
 
 ## This project or every project
@@ -244,8 +245,8 @@ the others.
 To see which skills have changed since you installed them, compare two
 columns of
 [`installed_skills()`](https://rfortherestofus.github.io/ally/reference/installed_skills.md).
-`installed` is the date you installed or last updated a skill, and
-`updated_on_github` is the date its folder last changed on GitHub:
+`installed` is when you installed or last updated a skill, and
+`updated_on_github` is when its folder last changed on GitHub:
 
 ``` r
 

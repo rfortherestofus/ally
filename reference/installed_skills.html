@@ -81,8 +81,9 @@ is in the <code>SKILL.md</code> at <code>path</code>.</p></li>
 <li><p><code>installed_from</code>: the GitHub repository and folder, local path or link
 target the skill was installed from, such as
 <code>"posit-dev/skills/r-lib/r-cli-app"</code>, or <code>NA</code> when nothing recorded it.</p></li>
-<li><p><code>installed</code>: the date this copy was installed or last updated.</p></li>
-<li><p><code>updated_on_github</code>: the date the skill's folder last changed on GitHub,
+<li><p><code>installed</code>: when this copy was installed or last updated, in your time
+zone.</p></li>
+<li><p><code>updated_on_github</code>: when the skill's folder last changed on GitHub,
 or <code>NA</code> for skills that did not come from GitHub.</p></li>
 <li><p><code>scope</code>: <code>"project"</code> or <code>"user"</code>.</p></li>
 <li><p><code>found_in</code>: the folders that hold the skill, such as <code>".agents, .claude"</code>.</p></li>
@@ -98,11 +99,11 @@ that records it: the <code>.ally-source.json</code> that <code><a href="install_
 lockfile the <code>skills</code> command-line tool (<code>npx skills</code>) keeps at
 <code>.agents/.skill-lock.json</code>. A skill that is a link to a folder elsewhere shows
 that folder as where it came from. Skills copied in by hand have none of this,
-so their install date is the date their folder was created.</p>
+so their install time is when their folder was created.</p>
 <p>For skills installed from GitHub, <code>installed_skills()</code> also looks up when the
 skill's folder last changed there, using the repository's public commit feed.
 That needs no token and does not count against the GitHub API rate limit. If
-the date is newer than <code>installed</code>, <code><a href="update_skill.html">update_skill()</a></code> will fetch a newer
+that time is later than <code>installed</code>, <code><a href="update_skill.html">update_skill()</a></code> will fetch a newer
 version.</p>
 <p>Skills that come from Claude Code plugins live elsewhere and are not listed.</p>
     </div>

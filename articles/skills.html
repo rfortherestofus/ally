@@ -150,15 +150,15 @@
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_dir.html" class="external-link">with_dir</a></span><span class="op">(</span><span class="va">project</span>, <span class="fu"><a href="../reference/install_skill.html">install_skill</a></span><span class="op">(</span><span class="va">skill</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✔ Installed "r-style-guide" to '/tmp/Rtmp6uQ6c9/my-project/.agents/skills/r-style-guide'</span></span>
+<span><span class="co">#&gt; ✔ Installed "r-style-guide" to '/tmp/Rtmpd4PIDA/my-project/.agents/skills/r-style-guide'</span></span>
 <span><span class="co">#&gt; ℹ Codex and other agents read '.agents/skills/' directly.</span></span>
-<span><span class="co">#&gt; ✔ Copied to "Claude Code" ('/tmp/Rtmp6uQ6c9/my-project/.claude/skills')</span></span></code></pre></div>
+<span><span class="co">#&gt; ✔ Copied to "Claude Code" ('/tmp/Rtmpd4PIDA/my-project/.claude/skills')</span></span></code></pre></div>
 </div>
 <p>Both copies are now in place:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/dir_tree.html" class="external-link">dir_tree</a></span><span class="op">(</span><span class="va">project</span>, all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; /tmp/Rtmp6uQ6c9/my-project</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpd4PIDA/my-project</span></span>
 <span><span class="co">#&gt; ├── .agents</span></span>
 <span><span class="co">#&gt; │   └── skills</span></span>
 <span><span class="co">#&gt; │       └── r-style-guide</span></span>
@@ -175,18 +175,19 @@
 <div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_dir.html" class="external-link">with_dir</a></span><span class="op">(</span><span class="va">project</span>, <span class="fu"><a href="../reference/installed_skills.html">installed_skills</a></span><span class="op">(</span>scope <span class="op">=</span> <span class="st">"project"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 1 × 9</span></span>
-<span><span class="co">#&gt;   name      description installed_by installed_from installed  updated_on_github</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;     &lt;chr&gt;       &lt;chr&gt;        &lt;chr&gt;          &lt;date&gt;     &lt;date&gt;           </span></span>
-<span><span class="co">#&gt; 1 r-style-… House styl… ally         /tmp/Rtmp6uQ6… 2026-09-23 NA               </span></span>
-<span><span class="co">#&gt; # ℹ 3 more variables: scope &lt;chr&gt;, found_in &lt;chr&gt;, path &lt;chr&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt;   name          description      installed_by installed_from installed          </span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;         &lt;chr&gt;            &lt;chr&gt;        &lt;chr&gt;          &lt;dttm&gt;             </span></span>
+<span><span class="co">#&gt; 1 r-style-guide House style for… ally         /tmp/Rtmpd4PI… 2026-09-23 19:02:48</span></span>
+<span><span class="co">#&gt; # ℹ 4 more variables: updated_on_github &lt;dttm&gt;, scope &lt;chr&gt;, found_in &lt;chr&gt;,</span></span>
+<span><span class="co">#&gt; #   path &lt;chr&gt;</span></span></code></pre></div>
 </div>
 <p>Leave out <code>scope</code> to list the project’s skills and the ones in your home folder together.</p>
 <p>And <code><a href="../reference/remove_skill.html">remove_skill()</a></code> deletes both copies:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_dir.html" class="external-link">with_dir</a></span><span class="op">(</span><span class="va">project</span>, <span class="fu"><a href="../reference/remove_skill.html">remove_skill</a></span><span class="op">(</span><span class="st">"r-style-guide"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✔ Removed copy at '/tmp/Rtmp6uQ6c9/my-project/.claude/skills/r-style-guide'</span></span>
-<span><span class="co">#&gt; ✔ Removed canonical copy at '/tmp/Rtmp6uQ6c9/my-project/.agents/skills/r-style-guide'</span></span></code></pre></div>
+<span><span class="co">#&gt; ✔ Removed copy at '/tmp/Rtmpd4PIDA/my-project/.claude/skills/r-style-guide'</span></span>
+<span><span class="co">#&gt; ✔ Removed canonical copy at '/tmp/Rtmpd4PIDA/my-project/.agents/skills/r-style-guide'</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="this-project-or-every-project">This project or every project<a class="anchor" aria-label="anchor" href="#this-project-or-every-project"></a>
 </h2>
@@ -246,7 +247,7 @@
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <p>Only skills that {ally} installed know their source, so the loop skips the others.</p>
-<p>To see which skills have changed since you installed them, compare two columns of <code><a href="../reference/installed_skills.html">installed_skills()</a></code>. <code>installed</code> is the date you installed or last updated a skill, and <code>updated_on_github</code> is the date its folder last changed on GitHub:</p>
+<p>To see which skills have changed since you installed them, compare two columns of <code><a href="../reference/installed_skills.html">installed_skills()</a></code>. <code>installed</code> is when you installed or last updated a skill, and <code>updated_on_github</code> is when its folder last changed on GitHub:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">skills</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/installed_skills.html">installed_skills</a></span><span class="op">(</span>scope <span class="op">=</span> <span class="st">"project"</span><span class="op">)</span></span>

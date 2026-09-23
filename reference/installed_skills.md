@@ -43,10 +43,11 @@ A tibble with one row per skill and columns:
   `"posit-dev/skills/r-lib/r-cli-app"`, or `NA` when nothing recorded
   it.
 
-- `installed`: the date this copy was installed or last updated.
+- `installed`: when this copy was installed or last updated, in your
+  time zone.
 
-- `updated_on_github`: the date the skill's folder last changed on
-  GitHub, or `NA` for skills that did not come from GitHub.
+- `updated_on_github`: when the skill's folder last changed on GitHub,
+  or `NA` for skills that did not come from GitHub.
 
 - `scope`: `"project"` or `"user"`.
 
@@ -67,13 +68,13 @@ these that records it: the `.ally-source.json` that
 writes, or the lockfile the `skills` command-line tool (`npx skills`)
 keeps at `.agents/.skill-lock.json`. A skill that is a link to a folder
 elsewhere shows that folder as where it came from. Skills copied in by
-hand have none of this, so their install date is the date their folder
-was created.
+hand have none of this, so their install time is when their folder was
+created.
 
 For skills installed from GitHub, `installed_skills()` also looks up
 when the skill's folder last changed there, using the repository's
 public commit feed. That needs no token and does not count against the
-GitHub API rate limit. If the date is newer than `installed`,
+GitHub API rate limit. If that time is later than `installed`,
 [`update_skill()`](https://rfortherestofus.github.io/ally/reference/update_skill.md)
 will fetch a newer version.
 
