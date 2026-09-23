@@ -9,6 +9,8 @@ expected folder.
 
 Useful links:
 
+- <https://rfortherestofus.github.io/ally/>
+
 - <https://github.com/rfortherestofus/ally>
 
 - Report bugs at <https://github.com/rfortherestofus/ally/issues>

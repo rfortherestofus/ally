@@ -97,7 +97,7 @@ install_skill("~/my-skills/r-style-guide")
 
 ``` r
 
-installed_skills()                # list everything in .agents/skills/
+installed_skills()                # every skill, with description and source
 update_skill("r-style-guide")     # re-fetch from the original source
 link_skills()                     # refresh the Claude Code copies
 remove_skill("r-style-guide")     # delete canonical copy + Claude copy

@@ -101,9 +101,9 @@ just for this call:
 ``` r
 
 withr::with_dir(project, install_skill(skill))
-#> ✔ Installed "r-style-guide" to '/tmp/Rtmpw6kGpX/my-project/.agents/skills/r-style-guide'
+#> ✔ Installed "r-style-guide" to '/tmp/RtmpnuLwa5/my-project/.agents/skills/r-style-guide'
 #> ℹ Codex and other agents read '.agents/skills/' directly.
-#> ✔ Copied to "Claude Code" ('/tmp/Rtmpw6kGpX/my-project/.claude/skills')
+#> ✔ Copied to "Claude Code" ('/tmp/RtmpnuLwa5/my-project/.claude/skills')
 ```
 
 Both copies are now in place:
@@ -111,7 +111,7 @@ Both copies are now in place:
 ``` r
 
 fs::dir_tree(project, all = TRUE)
-#> /tmp/Rtmpw6kGpX/my-project
+#> /tmp/RtmpnuLwa5/my-project
 #> ├── .agents
 #> │   └── skills
 #> │       └── r-style-guide
@@ -125,13 +125,22 @@ fs::dir_tree(project, all = TRUE)
 ```
 
 [`installed_skills()`](https://rfortherestofus.github.io/ally/reference/installed_skills.md)
-lists what is installed in a project:
+lists every skill an agent can load, with its description and where it
+came from. It looks in `.agents/skills/` and in each agent’s own folder,
+so it also finds skills that other tools installed or that you copied in
+by hand. Here it looks only in the project:
 
 ``` r
 
-withr::with_dir(project, installed_skills())
-#> [1] "r-style-guide"
+withr::with_dir(project, installed_skills(scope = "project"))
+#> # A tibble: 1 × 7
+#>   name          description             source installed_by scope found_in path 
+#>   <chr>         <chr>                   <chr>  <chr>        <chr> <chr>    <chr>
+#> 1 r-style-guide House style for R code… /tmp/… ally         proj… .agents… /tmp…
 ```
+
+Leave out `scope` to list the project’s skills and the ones in your home
+folder together.
 
 And
 [`remove_skill()`](https://rfortherestofus.github.io/ally/reference/remove_skill.md)
@@ -140,8 +149,8 @@ deletes both copies:
 ``` r
 
 withr::with_dir(project, remove_skill("r-style-guide"))
-#> ✔ Removed copy at '/tmp/Rtmpw6kGpX/my-project/.claude/skills/r-style-guide'
-#> ✔ Removed canonical copy at '/tmp/Rtmpw6kGpX/my-project/.agents/skills/r-style-guide'
+#> ✔ Removed copy at '/tmp/RtmpnuLwa5/my-project/.claude/skills/r-style-guide'
+#> ✔ Removed canonical copy at '/tmp/RtmpnuLwa5/my-project/.agents/skills/r-style-guide'
 ```
 
 ## This project or every project
@@ -221,10 +230,14 @@ project up to date at once:
 
 ``` r
 
-for (skill in installed_skills()) {
+skills <- installed_skills(scope = "project")
+for (skill in skills$name[skills$installed_by %in% "ally"]) {
   update_skill(skill)
 }
 ```
+
+Only skills that {ally} installed know their source, so the loop skips
+the others.
 
 Skills installed with `scope = "user"` are updated the same way, with
 `scope = "user"` added to each call.
