@@ -9,7 +9,7 @@ utc <- function(x) format(x, "%Y-%m-%d %H:%M:%S", tz = "UTC")
 
 skill_columns <- c(
   "name", "description", "installed_by", "installed_from", "installed",
-  "updated_on_github", "scope", "found_in", "path"
+  "updated_on_github", "edited", "scope", "found_in", "path"
 )
 
 # A fresh project and home folder, so the real ~/.claude/skills never leaks in.

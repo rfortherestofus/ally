@@ -28,6 +28,11 @@ target the skill was installed from, such as
 zone.
 \item \code{updated_on_github}: when the skill's folder last changed on GitHub,
 or \code{NA} for skills that did not come from GitHub.
+\item \code{edited}: \code{TRUE} if any copy of the skill has changed since ally
+installed it, \code{FALSE} if none has, or \code{NA} when there is nothing to
+compare with: skills ally did not install, or installed before it
+recorded a fingerprint of each skill's files. \code{\link[=update_skill]{update_skill()}} will not
+overwrite an edited skill without \code{force = TRUE}.
 \item \code{scope}: \code{"project"} or \code{"user"}.
 \item \code{found_in}: the folders that hold the skill, such as \code{".agents, .claude"}.
 \item \code{path}: the skill's folder, preferring the \verb{.agents/skills/} copy.

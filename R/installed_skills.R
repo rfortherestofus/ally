@@ -43,6 +43,11 @@
 #'     zone.
 #'   * `updated_on_github`: when the skill's folder last changed on GitHub,
 #'     or `NA` for skills that did not come from GitHub.
+#'   * `edited`: `TRUE` if any copy of the skill has changed since ally
+#'     installed it, `FALSE` if none has, or `NA` when there is nothing to
+#'     compare with: skills ally did not install, or installed before it
+#'     recorded a fingerprint of each skill's files. [update_skill()] will not
+#'     overwrite an edited skill without `force = TRUE`.
 #'   * `scope`: `"project"` or `"user"`.
 #'   * `found_in`: the folders that hold the skill, such as `".agents, .claude"`.
 #'   * `path`: the skill's folder, preferring the `.agents/skills/` copy.
@@ -111,6 +116,7 @@ scan_skills <- function(root, scope, check_github = TRUE) {
       } else {
         no_time()
       },
+      edited = skill_edited(copies),
       scope = scope,
       found_in = paste(unique(copies$found_in), collapse = ", "),
       path = main$path,
@@ -118,6 +124,23 @@ scan_skills <- function(root, scope, check_github = TRUE) {
     )
   })
   do.call(rbind, rows)
+}
+
+#' Whether any copy of a skill differs from what ally installed
+#'
+#' Compares every real folder among `copies` (links point at another copy, so
+#' they are skipped) with the fingerprint recorded in the first copy's
+#' `.ally-source.json`. `NA` when there is no fingerprint.
+#'
+#' @keywords internal
+#' @noRd
+skill_edited <- function(copies) {
+  recorded <- read_source_metadata(copies$path[1])$files_hash
+  if (is.null(recorded)) {
+    return(NA)
+  }
+  folders <- copies$path[!copies$is_link | seq_len(nrow(copies)) == 1]
+  any(vapply(folders, skill_hash, character(1)) != recorded)
 }
 
 #' Folders scanned for skills, relative to a scope root
@@ -322,6 +345,7 @@ empty_skills <- function() {
     installed_from = character(),
     installed = .POSIXct(numeric(), tz = ""),
     updated_on_github = .POSIXct(numeric(), tz = ""),
+    edited = logical(),
     scope = character(),
     found_in = character(),
     path = character(),

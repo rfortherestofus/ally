@@ -4,7 +4,12 @@
 \alias{install_skill}
 \title{Install an AI coding assistant skill}
 \usage{
-install_skill(source, scope = c("project", "user"), link = FALSE)
+install_skill(
+  source,
+  scope = c("project", "user"),
+  link = FALSE,
+  force = FALSE
+)
 }
 \arguments{
 \item{source}{One of:
@@ -28,6 +33,10 @@ pointing at the \code{.agents/skills} copy instead of a second copy, so there is
 single set of files to edit. Falls back to copying where links can't be
 created (typically Windows without developer mode). The default, \code{FALSE},
 copies.}
+
+\item{force}{If \code{FALSE}, the default, stop rather than overwrite a copy of the
+skill that has been edited since it was installed or that ally did not
+install. \code{TRUE} overwrites it.}
 }
 \value{
 Invisibly, a list describing the install.
@@ -43,6 +52,11 @@ use the skill.
 \details{
 GitHub skills are fetched from the repository's zip archive: one download, no token,
 no API rate limit. Public repositories only.
+
+Installing a skill that is already there replaces it. \code{install_skill()} records a
+fingerprint of the skill's files, so if a copy has been edited since then, or was
+not installed by ally at all, it stops rather than lose that work. Pass
+\code{force = TRUE} to overwrite it anyway.
 }
 \examples{
 \dontrun{

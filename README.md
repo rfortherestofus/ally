@@ -56,19 +56,25 @@ in your home folder, whether {ally} installed it or not:
 
 ```r
 ally::installed_skills()
-#> # A tibble: 3 × 9
-#>   name         description installed_by installed_from installed           updated_on_github   scope
-#>   <chr>        <chr>       <chr>        <chr>          <dttm>              <dttm>              <chr>
-#> 1 my-notes     How I like… <NA>         <NA>           2026-09-23 12:04:47 NA                  user
-#> 2 quarto-auth… Use when t… ally         posit-dev/ski… 2026-09-23 12:04:46 2026-05-01 08:28:25 user
-#> 3 r-cli-app    Build comm… ally         posit-dev/ski… 2026-09-23 12:04:47 2026-04-20 13:43:24 user
+#> # A tibble: 3 × 10
+#>   name  description installed_by installed_from installed           updated_on_github   edited scope
+#>   <chr> <chr>       <chr>        <chr>          <dttm>              <dttm>              <lgl>  <chr>
+#> 1 my-n… How I like… <NA>         <NA>           2026-09-23 12:14:57 NA                  NA     user
+#> 2 quar… Use when t… ally         posit-dev/ski… 2026-09-23 12:14:56 2026-05-01 08:28:25 FALSE  user
+#> 3 r-cl… Build comm… ally         posit-dev/ski… 2026-09-23 12:14:57 2026-04-20 13:43:24 FALSE  user
 #> # ℹ 2 more variables: found_in <chr>, path <chr>
 ```
 
-It shows what installed each skill, where from, when, and when the skill last
-changed on GitHub, so you can see which ones have a newer version. Skills that
-were copied in by hand have no record of where they came from, so those
-columns are `NA`.
+It shows what installed each skill, where from, when, when the skill last
+changed on GitHub, and whether you have edited it. Skills that were copied in
+by hand have no record of where they came from, so those columns are `NA`.
+
+## Your edits are safe
+
+`install_skill()` records a fingerprint of each skill's files. If you edit a
+skill, `update_skill()`, `install_skill()` and `link_skills()` stop rather than
+overwrite your changes, and tell you which files changed. Pass `force = TRUE`
+to overwrite them anyway.
 
 ## How it works
 

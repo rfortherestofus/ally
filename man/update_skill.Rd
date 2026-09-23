@@ -4,7 +4,7 @@
 \alias{update_skill}
 \title{Update an installed skill from its original source}
 \usage{
-update_skill(skill, scope = c("project", "user"), link = FALSE)
+update_skill(skill, scope = c("project", "user"), link = FALSE, force = FALSE)
 }
 \arguments{
 \item{skill}{Name of the installed skill (matches the directory name in
@@ -18,11 +18,17 @@ pointing at the \code{.agents/skills} copy instead of a second copy, so there is
 single set of files to edit. Falls back to copying where links can't be
 created (typically Windows without developer mode). The default, \code{FALSE},
 copies.}
+
+\item{force}{If \code{FALSE}, the default, stop rather than overwrite a copy of the
+skill that has been edited since it was installed or that ally did not
+install. \code{TRUE} overwrites it.}
 }
 \value{
 Invisibly, the result of \code{\link[=install_skill]{install_skill()}}.
 }
 \description{
 Re-fetches the skill from whatever source it was installed from (recorded
-in \code{.ally-source.json}) and refreshes the Claude Code copy.
+in \code{.ally-source.json}) and refreshes the Claude Code copy. If either copy has
+been edited since it was installed, it stops rather than lose the edits; pass
+\code{force = TRUE} to overwrite them.
 }
