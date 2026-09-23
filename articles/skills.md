@@ -101,9 +101,9 @@ just for this call:
 ``` r
 
 withr::with_dir(project, install_skill(skill))
-#> ✔ Installed "r-style-guide" to '/tmp/RtmpnuLwa5/my-project/.agents/skills/r-style-guide'
+#> ✔ Installed "r-style-guide" to '/tmp/Rtmp6uQ6c9/my-project/.agents/skills/r-style-guide'
 #> ℹ Codex and other agents read '.agents/skills/' directly.
-#> ✔ Copied to "Claude Code" ('/tmp/RtmpnuLwa5/my-project/.claude/skills')
+#> ✔ Copied to "Claude Code" ('/tmp/Rtmp6uQ6c9/my-project/.claude/skills')
 ```
 
 Both copies are now in place:
@@ -111,7 +111,7 @@ Both copies are now in place:
 ``` r
 
 fs::dir_tree(project, all = TRUE)
-#> /tmp/RtmpnuLwa5/my-project
+#> /tmp/Rtmp6uQ6c9/my-project
 #> ├── .agents
 #> │   └── skills
 #> │       └── r-style-guide
@@ -125,18 +125,20 @@ fs::dir_tree(project, all = TRUE)
 ```
 
 [`installed_skills()`](https://rfortherestofus.github.io/ally/reference/installed_skills.md)
-lists every skill an agent can load, with its description and where it
-came from. It looks in `.agents/skills/` and in each agent’s own folder,
-so it also finds skills that other tools installed or that you copied in
-by hand. Here it looks only in the project:
+lists every skill an agent can load, with the start of its description,
+what installed it, where from, and when. It looks in `.agents/skills/`
+and in each agent’s own folder, so it also finds skills that other tools
+installed or that you copied in by hand. Here it looks only in the
+project:
 
 ``` r
 
 withr::with_dir(project, installed_skills(scope = "project"))
-#> # A tibble: 1 × 7
-#>   name          description             source installed_by scope found_in path 
-#>   <chr>         <chr>                   <chr>  <chr>        <chr> <chr>    <chr>
-#> 1 r-style-guide House style for R code… /tmp/… ally         proj… .agents… /tmp…
+#> # A tibble: 1 × 9
+#>   name      description installed_by installed_from installed  updated_on_github
+#>   <chr>     <chr>       <chr>        <chr>          <date>     <date>           
+#> 1 r-style-… House styl… ally         /tmp/Rtmp6uQ6… 2026-09-23 NA               
+#> # ℹ 3 more variables: scope <chr>, found_in <chr>, path <chr>
 ```
 
 Leave out `scope` to list the project’s skills and the ones in your home
@@ -149,8 +151,8 @@ deletes both copies:
 ``` r
 
 withr::with_dir(project, remove_skill("r-style-guide"))
-#> ✔ Removed copy at '/tmp/RtmpnuLwa5/my-project/.claude/skills/r-style-guide'
-#> ✔ Removed canonical copy at '/tmp/RtmpnuLwa5/my-project/.agents/skills/r-style-guide'
+#> ✔ Removed copy at '/tmp/Rtmp6uQ6c9/my-project/.claude/skills/r-style-guide'
+#> ✔ Removed canonical copy at '/tmp/Rtmp6uQ6c9/my-project/.agents/skills/r-style-guide'
 ```
 
 ## This project or every project
@@ -238,6 +240,18 @@ for (skill in skills$name[skills$installed_by %in% "ally"]) {
 
 Only skills that {ally} installed know their source, so the loop skips
 the others.
+
+To see which skills have changed since you installed them, compare two
+columns of
+[`installed_skills()`](https://rfortherestofus.github.io/ally/reference/installed_skills.md).
+`installed` is the date you installed or last updated a skill, and
+`updated_on_github` is the date its folder last changed on GitHub:
+
+``` r
+
+skills <- installed_skills(scope = "project")
+skills[which(skills$updated_on_github > skills$installed), ]
+```
 
 Skills installed with `scope = "user"` are updated the same way, with
 `scope = "user"` added to each call.
