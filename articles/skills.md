@@ -101,9 +101,9 @@ just for this call:
 ``` r
 
 withr::with_dir(project, install_skill(skill))
-#> ✔ Installed "r-style-guide" to '/tmp/Rtmpd4PIDA/my-project/.agents/skills/r-style-guide'
+#> ✔ Installed "r-style-guide" to '/tmp/RtmpHXfpKg/my-project/.agents/skills/r-style-guide'
 #> ℹ Codex and other agents read '.agents/skills/' directly.
-#> ✔ Copied to "Claude Code" ('/tmp/Rtmpd4PIDA/my-project/.claude/skills')
+#> ✔ Copied to "Claude Code" ('/tmp/RtmpHXfpKg/my-project/.claude/skills')
 ```
 
 Both copies are now in place:
@@ -111,7 +111,7 @@ Both copies are now in place:
 ``` r
 
 fs::dir_tree(project, all = TRUE)
-#> /tmp/Rtmpd4PIDA/my-project
+#> /tmp/RtmpHXfpKg/my-project
 #> ├── .agents
 #> │   └── skills
 #> │       └── r-style-guide
@@ -125,11 +125,8 @@ fs::dir_tree(project, all = TRUE)
 ```
 
 [`installed_skills()`](https://rfortherestofus.github.io/ally/reference/installed_skills.md)
-lists every skill an agent can load, with the start of its description,
-what installed it, where from, and when. It looks in `.agents/skills/`
-and in each agent’s own folder, so it also finds skills that other tools
-installed or that you copied in by hand. Here it looks only in the
-project:
+lists the skills in the project (see [See what is
+installed](#see-what-is-installed) for what each column means):
 
 ``` r
 
@@ -137,13 +134,10 @@ withr::with_dir(project, installed_skills(scope = "project"))
 #> # A tibble: 1 × 9
 #>   name          description      installed_by installed_from installed          
 #>   <chr>         <chr>            <chr>        <chr>          <dttm>             
-#> 1 r-style-guide House style for… ally         /tmp/Rtmpd4PI… 2026-09-23 19:02:48
+#> 1 r-style-guide House style for… ally         /tmp/RtmpHXfp… 2026-09-23 19:08:11
 #> # ℹ 4 more variables: updated_on_github <dttm>, scope <chr>, found_in <chr>,
 #> #   path <chr>
 ```
-
-Leave out `scope` to list the project’s skills and the ones in your home
-folder together.
 
 And
 [`remove_skill()`](https://rfortherestofus.github.io/ally/reference/remove_skill.md)
@@ -152,8 +146,8 @@ deletes both copies:
 ``` r
 
 withr::with_dir(project, remove_skill("r-style-guide"))
-#> ✔ Removed copy at '/tmp/Rtmpd4PIDA/my-project/.claude/skills/r-style-guide'
-#> ✔ Removed canonical copy at '/tmp/Rtmpd4PIDA/my-project/.agents/skills/r-style-guide'
+#> ✔ Removed copy at '/tmp/RtmpHXfpKg/my-project/.claude/skills/r-style-guide'
+#> ✔ Removed canonical copy at '/tmp/RtmpHXfpKg/my-project/.agents/skills/r-style-guide'
 ```
 
 ## This project or every project
@@ -172,6 +166,8 @@ install_skill("posit-dev/skills/quarto/quarto-authoring", scope = "user")
 ```
 
 Every function in {ally} takes the same `scope` argument.
+[`installed_skills()`](https://rfortherestofus.github.io/ally/reference/installed_skills.md)
+looks in both places unless you pick one.
 
 ## Ways to name a skill
 
@@ -205,6 +201,59 @@ GitHub skills are fetched from the repository’s zip archive: a single
 download that needs no token and never counts against the GitHub API
 rate limit, so a room full of people on one network can install at once.
 Public repositories only.
+
+## See what is installed
+
+[`installed_skills()`](https://rfortherestofus.github.io/ally/reference/installed_skills.md)
+lists every skill an agent can load on your computer, not just the ones
+{ally} installed. It looks in the shared `.agents/skills/` folder and in
+each agent’s own folder (`.claude/skills/`, `.codex/skills/`,
+`.cursor/skills/`), in the current project and in your home folder:
+
+``` r
+
+installed_skills()
+#> # A tibble: 3 × 9
+#>   name         description installed_by installed_from installed           updated_on_github   scope
+#>   <chr>        <chr>       <chr>        <chr>          <dttm>              <dttm>              <chr>
+#> 1 my-notes     How I like… <NA>         <NA>           2026-09-23 12:04:47 NA                  user
+#> 2 quarto-auth… Use when t… ally         posit-dev/ski… 2026-09-23 12:04:46 2026-05-01 08:28:25 user
+#> 3 r-cli-app    Build comm… ally         posit-dev/ski… 2026-09-23 12:04:47 2026-04-20 13:43:24 user
+#> # ℹ 2 more variables: found_in <chr>, path <chr>
+```
+
+Each row is one skill. A skill found in several folders, such as the two
+copies
+[`install_skill()`](https://rfortherestofus.github.io/ally/reference/install_skill.md)
+makes, appears once.
+
+| Column | What it tells you |
+|----|----|
+| `name` | The skill’s folder name. |
+| `description` | The start of the description from the `SKILL.md` header, which agents read to decide when to use the skill. The full text is in the `SKILL.md` at `path`. |
+| `installed_by` | `"ally"`, `"skills CLI"` for skills installed with `npx skills`, or `NA` when nothing recorded it. |
+| `installed_from` | The GitHub repository and folder, or local path, the skill was installed from. |
+| `installed` | When this copy was installed or last updated, in your time zone. |
+| `updated_on_github` | When the skill’s folder last changed on GitHub. |
+| `scope` | `"project"` or `"user"`. |
+| `found_in` | The folders that hold the skill, such as `".agents, .claude"`. |
+| `path` | The skill’s folder. |
+
+Some rows are mostly `NA`, like `my-notes` above. Those are skills that
+were copied into a folder by hand or by a tool that keeps no record, so
+there is no way to tell where they came from. Their `installed` time is
+when their folder was created, and without a GitHub repository there is
+nothing to check for updates. Install them again with
+[`install_skill()`](https://rfortherestofus.github.io/ally/reference/install_skill.md)
+and {ally} records their source from then on.
+
+`updated_on_github` comes from each repository’s public commit feed, so,
+like installing, it needs no token and does not count against the GitHub
+API rate limit. It takes a moment for each GitHub skill. Pass
+`check_github = FALSE` to skip it, when you are offline for instance.
+
+Claude Code plugins bring their own skills, which live elsewhere and are
+not listed.
 
 ## Keeping skills current
 

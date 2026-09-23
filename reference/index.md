@@ -2,7 +2,7 @@
 
 ## Skill installation
 
-Install, update, and remove agent skills.
+Install, list, update, and remove agent skills.
 
 - [`install_skill()`](https://rfortherestofus.github.io/ally/reference/install_skill.md)
   : Install an AI coding assistant skill

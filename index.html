@@ -43,6 +43,7 @@
 <li><a class="dropdown-item" href="articles/skills.html">Working with skills</a></li>
   </ul>
 </li>
+<li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -94,6 +95,21 @@
 <span><span class="co">#&gt; ✔ Copied to "Claude Code" (~/.claude/skills)</span></span></code></pre></div>
 </div>
 <div class="section level2">
+<h2 id="see-what-is-installed">See what is installed<a class="anchor" aria-label="anchor" href="#see-what-is-installed"></a>
+</h2>
+<p><code><a href="reference/installed_skills.html">installed_skills()</a></code> lists every skill an agent can load, in the project and in your home folder, whether {ally} installed it or not:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">ally</span><span class="fu">::</span><span class="fu"><a href="reference/installed_skills.html">installed_skills</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 3 × 9</span></span>
+<span><span class="co">#&gt;   name         description installed_by installed_from installed           updated_on_github   scope</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt;        &lt;chr&gt;          &lt;dttm&gt;              &lt;dttm&gt;              &lt;chr&gt;</span></span>
+<span><span class="co">#&gt; 1 my-notes     How I like… &lt;NA&gt;         &lt;NA&gt;           2026-09-23 12:04:47 NA                  user</span></span>
+<span><span class="co">#&gt; 2 quarto-auth… Use when t… ally         posit-dev/ski… 2026-09-23 12:04:46 2026-05-01 08:28:25 user</span></span>
+<span><span class="co">#&gt; 3 r-cli-app    Build comm… ally         posit-dev/ski… 2026-09-23 12:04:47 2026-04-20 13:43:24 user</span></span>
+<span><span class="co">#&gt; # ℹ 2 more variables: found_in &lt;chr&gt;, path &lt;chr&gt;</span></span></code></pre></div>
+<p>It shows what installed each skill, where from, when, and when the skill last changed on GitHub, so you can see which ones have a newer version. Skills that were copied in by hand have no record of where they came from, so those columns are <code>NA</code>.</p>
+</div>
+<div class="section level2">
 <h2 id="how-it-works">How it works<a class="anchor" aria-label="anchor" href="#how-it-works"></a>
 </h2>
 <table class="table">
@@ -123,7 +139,7 @@
 <div class="section level2">
 <h2 id="sources">Sources<a class="anchor" aria-label="anchor" href="#sources"></a>
 </h2>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Full GitHub URL, pasted straight from the browser</span></span>
 <span><span class="fu"><a href="reference/install_skill.html">install_skill</a></span><span class="op">(</span></span>
 <span>  <span class="st">"https://github.com/posit-dev/skills/tree/main/posit-dev/critical-code-reviewer"</span></span>
@@ -145,13 +161,13 @@
 <div class="section level2">
 <h2 id="other-functions">Other functions<a class="anchor" aria-label="anchor" href="#other-functions"></a>
 </h2>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/installed_skills.html">installed_skills</a></span><span class="op">(</span><span class="op">)</span>                <span class="co"># every skill, with its source and dates</span></span>
 <span><span class="fu"><a href="reference/update_skill.html">update_skill</a></span><span class="op">(</span><span class="st">"r-style-guide"</span><span class="op">)</span>     <span class="co"># re-fetch from the original source</span></span>
 <span><span class="fu"><a href="reference/link_skills.html">link_skills</a></span><span class="op">(</span><span class="op">)</span>                     <span class="co"># refresh the Claude Code copies</span></span>
 <span><span class="fu"><a href="reference/remove_skill.html">remove_skill</a></span><span class="op">(</span><span class="st">"r-style-guide"</span><span class="op">)</span>     <span class="co"># delete canonical copy + Claude copy</span></span>
 <span><span class="fu"><a href="reference/supported_agents.html">supported_agents</a></span><span class="op">(</span><span class="op">)</span>                <span class="co"># introspect agents that get their own copy</span></span></code></pre></div>
-<p>Every one of these takes the same <code>scope</code> argument as <code><a href="reference/install_skill.html">install_skill()</a></code>.</p>
+<p>Every one of these takes the same <code>scope</code> argument as <code><a href="reference/install_skill.html">install_skill()</a></code>. <code><a href="reference/installed_skills.html">installed_skills()</a></code> looks in the project and your home folder unless you pick one.</p>
 </div>
 <div class="section level2">
 <h2 id="code-of-conduct">Code of Conduct<a class="anchor" aria-label="anchor" href="#code-of-conduct"></a>

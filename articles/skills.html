@@ -41,6 +41,7 @@
 <li><a class="dropdown-item" href="../articles/skills.html">Working with skills</a></li>
   </ul>
 </li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -150,15 +151,15 @@
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_dir.html" class="external-link">with_dir</a></span><span class="op">(</span><span class="va">project</span>, <span class="fu"><a href="../reference/install_skill.html">install_skill</a></span><span class="op">(</span><span class="va">skill</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✔ Installed "r-style-guide" to '/tmp/Rtmpd4PIDA/my-project/.agents/skills/r-style-guide'</span></span>
+<span><span class="co">#&gt; ✔ Installed "r-style-guide" to '/tmp/RtmpHXfpKg/my-project/.agents/skills/r-style-guide'</span></span>
 <span><span class="co">#&gt; ℹ Codex and other agents read '.agents/skills/' directly.</span></span>
-<span><span class="co">#&gt; ✔ Copied to "Claude Code" ('/tmp/Rtmpd4PIDA/my-project/.claude/skills')</span></span></code></pre></div>
+<span><span class="co">#&gt; ✔ Copied to "Claude Code" ('/tmp/RtmpHXfpKg/my-project/.claude/skills')</span></span></code></pre></div>
 </div>
 <p>Both copies are now in place:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/dir_tree.html" class="external-link">dir_tree</a></span><span class="op">(</span><span class="va">project</span>, all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; /tmp/Rtmpd4PIDA/my-project</span></span>
+<span><span class="co">#&gt; /tmp/RtmpHXfpKg/my-project</span></span>
 <span><span class="co">#&gt; ├── .agents</span></span>
 <span><span class="co">#&gt; │   └── skills</span></span>
 <span><span class="co">#&gt; │       └── r-style-guide</span></span>
@@ -170,24 +171,23 @@
 <span><span class="co">#&gt;             ├── .ally-source.json</span></span>
 <span><span class="co">#&gt;             └── SKILL.md</span></span></code></pre></div>
 </div>
-<p><code><a href="../reference/installed_skills.html">installed_skills()</a></code> lists every skill an agent can load, with the start of its description, what installed it, where from, and when. It looks in <code>.agents/skills/</code> and in each agent’s own folder, so it also finds skills that other tools installed or that you copied in by hand. Here it looks only in the project:</p>
+<p><code><a href="../reference/installed_skills.html">installed_skills()</a></code> lists the skills in the project (see <a href="#see-what-is-installed">See what is installed</a> for what each column means):</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_dir.html" class="external-link">with_dir</a></span><span class="op">(</span><span class="va">project</span>, <span class="fu"><a href="../reference/installed_skills.html">installed_skills</a></span><span class="op">(</span>scope <span class="op">=</span> <span class="st">"project"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 1 × 9</span></span>
 <span><span class="co">#&gt;   name          description      installed_by installed_from installed          </span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;         &lt;chr&gt;            &lt;chr&gt;        &lt;chr&gt;          &lt;dttm&gt;             </span></span>
-<span><span class="co">#&gt; 1 r-style-guide House style for… ally         /tmp/Rtmpd4PI… 2026-09-23 19:02:48</span></span>
+<span><span class="co">#&gt; 1 r-style-guide House style for… ally         /tmp/RtmpHXfp… 2026-09-23 19:08:11</span></span>
 <span><span class="co">#&gt; # ℹ 4 more variables: updated_on_github &lt;dttm&gt;, scope &lt;chr&gt;, found_in &lt;chr&gt;,</span></span>
 <span><span class="co">#&gt; #   path &lt;chr&gt;</span></span></code></pre></div>
 </div>
-<p>Leave out <code>scope</code> to list the project’s skills and the ones in your home folder together.</p>
 <p>And <code><a href="../reference/remove_skill.html">remove_skill()</a></code> deletes both copies:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_dir.html" class="external-link">with_dir</a></span><span class="op">(</span><span class="va">project</span>, <span class="fu"><a href="../reference/remove_skill.html">remove_skill</a></span><span class="op">(</span><span class="st">"r-style-guide"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✔ Removed copy at '/tmp/Rtmpd4PIDA/my-project/.claude/skills/r-style-guide'</span></span>
-<span><span class="co">#&gt; ✔ Removed canonical copy at '/tmp/Rtmpd4PIDA/my-project/.agents/skills/r-style-guide'</span></span></code></pre></div>
+<span><span class="co">#&gt; ✔ Removed copy at '/tmp/RtmpHXfpKg/my-project/.claude/skills/r-style-guide'</span></span>
+<span><span class="co">#&gt; ✔ Removed canonical copy at '/tmp/RtmpHXfpKg/my-project/.agents/skills/r-style-guide'</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="this-project-or-every-project">This project or every project<a class="anchor" aria-label="anchor" href="#this-project-or-every-project"></a>
 </h2>
@@ -199,7 +199,7 @@
 <span><span class="co">#&gt; ℹ Every project on this computer can use skills in '~/.agents/skills/'.</span></span>
 <span><span class="co">#&gt; ✔ Copied to "Claude Code" ('~/.claude/skills')</span></span></code></pre></div>
 </div>
-<p>Every function in {ally} takes the same <code>scope</code> argument.</p>
+<p>Every function in {ally} takes the same <code>scope</code> argument. <code><a href="../reference/installed_skills.html">installed_skills()</a></code> looks in both places unless you pick one.</p>
 </section><section class="level2"><h2 id="ways-to-name-a-skill">Ways to name a skill<a class="anchor" aria-label="anchor" href="#ways-to-name-a-skill"></a>
 </h2>
 <p><code><a href="../reference/install_skill.html">install_skill()</a></code> accepts a few forms of <code>source</code>:</p>
@@ -226,12 +226,80 @@
 <span><span class="fu"><a href="../reference/install_skill.html">install_skill</a></span><span class="op">(</span><span class="st">"~/my-skills/r-style-guide"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>GitHub skills are fetched from the repository’s zip archive: a single download that needs no token and never counts against the GitHub API rate limit, so a room full of people on one network can install at once. Public repositories only.</p>
+</section><section class="level2"><h2 id="see-what-is-installed">See what is installed<a class="anchor" aria-label="anchor" href="#see-what-is-installed"></a>
+</h2>
+<p><code><a href="../reference/installed_skills.html">installed_skills()</a></code> lists every skill an agent can load on your computer, not just the ones {ally} installed. It looks in the shared <code>.agents/skills/</code> folder and in each agent’s own folder (<code>.claude/skills/</code>, <code>.codex/skills/</code>, <code>.cursor/skills/</code>), in the current project and in your home folder:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/installed_skills.html">installed_skills</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 3 × 9</span></span>
+<span><span class="co">#&gt;   name         description installed_by installed_from installed           updated_on_github   scope</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt;        &lt;chr&gt;          &lt;dttm&gt;              &lt;dttm&gt;              &lt;chr&gt;</span></span>
+<span><span class="co">#&gt; 1 my-notes     How I like… &lt;NA&gt;         &lt;NA&gt;           2026-09-23 12:04:47 NA                  user</span></span>
+<span><span class="co">#&gt; 2 quarto-auth… Use when t… ally         posit-dev/ski… 2026-09-23 12:04:46 2026-05-01 08:28:25 user</span></span>
+<span><span class="co">#&gt; 3 r-cli-app    Build comm… ally         posit-dev/ski… 2026-09-23 12:04:47 2026-04-20 13:43:24 user</span></span>
+<span><span class="co">#&gt; # ℹ 2 more variables: found_in &lt;chr&gt;, path &lt;chr&gt;</span></span></code></pre></div>
+</div>
+<p>Each row is one skill. A skill found in several folders, such as the two copies <code><a href="../reference/install_skill.html">install_skill()</a></code> makes, appears once.</p>
+<table class="table caption-top">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead><tr class="header">
+<th>Column</th>
+<th>What it tells you</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>name</code></td>
+<td>The skill’s folder name.</td>
+</tr>
+<tr class="even">
+<td><code>description</code></td>
+<td>The start of the description from the <code>SKILL.md</code> header, which agents read to decide when to use the skill. The full text is in the <code>SKILL.md</code> at <code>path</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>installed_by</code></td>
+<td>
+<code>"ally"</code>, <code>"skills CLI"</code> for skills installed with <code>npx skills</code>, or <code>NA</code> when nothing recorded it.</td>
+</tr>
+<tr class="even">
+<td><code>installed_from</code></td>
+<td>The GitHub repository and folder, or local path, the skill was installed from.</td>
+</tr>
+<tr class="odd">
+<td><code>installed</code></td>
+<td>When this copy was installed or last updated, in your time zone.</td>
+</tr>
+<tr class="even">
+<td><code>updated_on_github</code></td>
+<td>When the skill’s folder last changed on GitHub.</td>
+</tr>
+<tr class="odd">
+<td><code>scope</code></td>
+<td>
+<code>"project"</code> or <code>"user"</code>.</td>
+</tr>
+<tr class="even">
+<td><code>found_in</code></td>
+<td>The folders that hold the skill, such as <code>".agents, .claude"</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>path</code></td>
+<td>The skill’s folder.</td>
+</tr>
+</tbody>
+</table>
+<p>Some rows are mostly <code>NA</code>, like <code>my-notes</code> above. Those are skills that were copied into a folder by hand or by a tool that keeps no record, so there is no way to tell where they came from. Their <code>installed</code> time is when their folder was created, and without a GitHub repository there is nothing to check for updates. Install them again with <code><a href="../reference/install_skill.html">install_skill()</a></code> and {ally} records their source from then on.</p>
+<p><code>updated_on_github</code> comes from each repository’s public commit feed, so, like installing, it needs no token and does not count against the GitHub API rate limit. It takes a moment for each GitHub skill. Pass <code>check_github = FALSE</code> to skip it, when you are offline for instance.</p>
+<p>Claude Code plugins bring their own skills, which live elsewhere and are not listed.</p>
 </section><section class="level2"><h2 id="keeping-skills-current">Keeping skills current<a class="anchor" aria-label="anchor" href="#keeping-skills-current"></a>
 </h2>
 <p>Skills change. Authors fix mistakes, add reference material, and adapt their instructions as the tools they describe evolve. The Quarto authoring skill, for instance, records a version number in its <code>SKILL.md</code> header and has been revised several times. An installed skill is a snapshot of the moment you installed it; it does not update itself.</p>
 <p>{ally} records where each skill came from in a small <code>.ally-source.json</code> file next to the <code>SKILL.md</code>, so getting the newest version is one call:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/update_skill.html">update_skill</a></span><span class="op">(</span><span class="st">"quarto-authoring"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ Updating "quarto-authoring" from "posit-dev/skills/quarto/quarto-authoring@main"</span></span>
 <span><span class="co">#&gt; ✔ Installed "quarto-authoring" to '~/projects/report/.agents/skills/quarto-authoring'</span></span>
@@ -240,7 +308,7 @@
 </div>
 <p><code><a href="../reference/update_skill.html">update_skill()</a></code> fetches the skill again from its original source, replaces the canonical copy, and refreshes the Claude Code copy. To bring every skill in a project up to date at once:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">skills</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/installed_skills.html">installed_skills</a></span><span class="op">(</span>scope <span class="op">=</span> <span class="st">"project"</span><span class="op">)</span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">skill</span> <span class="kw">in</span> <span class="va">skills</span><span class="op">$</span><span class="va">name</span><span class="op">[</span><span class="va">skills</span><span class="op">$</span><span class="va">installed_by</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="st">"ally"</span><span class="op">]</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/update_skill.html">update_skill</a></span><span class="op">(</span><span class="va">skill</span><span class="op">)</span></span>
@@ -249,14 +317,14 @@
 <p>Only skills that {ally} installed know their source, so the loop skips the others.</p>
 <p>To see which skills have changed since you installed them, compare two columns of <code><a href="../reference/installed_skills.html">installed_skills()</a></code>. <code>installed</code> is when you installed or last updated a skill, and <code>updated_on_github</code> is when its folder last changed on GitHub:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">skills</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/installed_skills.html">installed_skills</a></span><span class="op">(</span>scope <span class="op">=</span> <span class="st">"project"</span><span class="op">)</span></span>
 <span><span class="va">skills</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">skills</span><span class="op">$</span><span class="va">updated_on_github</span> <span class="op">&gt;</span> <span class="va">skills</span><span class="op">$</span><span class="va">installed</span><span class="op">)</span>, <span class="op">]</span></span></code></pre></div>
 </div>
 <p>Skills installed with <code>scope = "user"</code> are updated the same way, with <code>scope = "user"</code> added to each call.</p>
 <p>If you edit a skill by hand in <code>.agents/skills/</code>, or delete the Claude Code copy by accident, <code><a href="../reference/link_skills.html">link_skills()</a></code> refreshes the copies for every installed skill without fetching anything:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/link_skills.html">link_skills</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>Prefer a single set of files? Pass <code>link = TRUE</code> to <code><a href="../reference/install_skill.html">install_skill()</a></code>, <code><a href="../reference/update_skill.html">update_skill()</a></code>, or <code><a href="../reference/link_skills.html">link_skills()</a></code> and {ally} puts a relative symlink at <code>.claude/skills/&lt;skill&gt;</code> pointing back to the canonical copy instead of a second copy. Where symlinks are not supported (typically Windows without developer mode) it falls back to copying and tells you so.</p>
