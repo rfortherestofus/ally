@@ -15,12 +15,12 @@
 #' lockfile the `skills` command-line tool (`npx skills`) keeps at
 #' `.agents/.skill-lock.json`. A skill that is a link to a folder elsewhere shows
 #' that folder as where it came from. Skills copied in by hand have none of this,
-#' so their install date is the date their folder was created.
+#' so their install time is when their folder was created.
 #'
 #' For skills installed from GitHub, `installed_skills()` also looks up when the
 #' skill's folder last changed there, using the repository's public commit feed.
 #' That needs no token and does not count against the GitHub API rate limit. If
-#' the date is newer than `installed`, [update_skill()] will fetch a newer
+#' that time is later than `installed`, [update_skill()] will fetch a newer
 #' version.
 #'
 #' Skills that come from Claude Code plugins live elsewhere and are not listed.
@@ -39,8 +39,9 @@
 #'   * `installed_from`: the GitHub repository and folder, local path or link
 #'     target the skill was installed from, such as
 #'     `"posit-dev/skills/r-lib/r-cli-app"`, or `NA` when nothing recorded it.
-#'   * `installed`: the date this copy was installed or last updated.
-#'   * `updated_on_github`: the date the skill's folder last changed on GitHub,
+#'   * `installed`: when this copy was installed or last updated, in your time
+#'     zone.
+#'   * `updated_on_github`: when the skill's folder last changed on GitHub,
 #'     or `NA` for skills that did not come from GitHub.
 #'   * `scope`: `"project"` or `"user"`.
 #'   * `found_in`: the folders that hold the skill, such as `".agents, .claude"`.
@@ -104,11 +105,11 @@ scan_skills <- function(root, scope, check_github = TRUE) {
       description = shorten(skill_description(fs::path(main$path, "SKILL.md"))),
       installed_by = origin$installed_by,
       installed_from = origin$installed_from,
-      installed = timestamp_date(origin$installed_at) %|NA|% folder_date(main$path),
+      installed = timestamp_time(origin$installed_at) %|NA|% folder_time(main$path),
       updated_on_github = if (check_github && !is.null(github)) {
         github_last_changed(github$owner, github$repo, github$path, github$ref)
       } else {
-        as.Date(NA)
+        no_time()
       },
       scope = scope,
       found_in = paste(unique(copies$found_in), collapse = ", "),
@@ -268,29 +269,45 @@ shorten <- function(x, width = 50) {
   x
 }
 
-#' The date part of an ISO 8601 timestamp such as `2026-05-14T11:22:37-0700`
+#' An ISO 8601 timestamp as a date-time in the local time zone
+#'
+#' Reads the forms ally (`2026-05-14T11:22:37-0700`), the skills CLI
+#' (`2026-03-30T20:18:42.463Z`) and GitHub (`2026-07-10T20:54:38Z`) write.
 #'
 #' @keywords internal
 #' @noRd
-timestamp_date <- function(x) {
-  if (is.null(x) || is.na(x) || !grepl("^\\d{4}-\\d{2}-\\d{2}", x)) {
-    return(as.Date(NA))
+timestamp_time <- function(x) {
+  pattern <- "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}"
+  if (is.null(x) || is.na(x) || !grepl(pattern, x)) {
+    return(no_time())
   }
-  as.Date(substr(x, 1, 10))
+  x <- sub("\\.\\d+", "", x)
+  x <- sub("Z$", "+0000", x)
+  x <- sub("([+-]\\d{2}):(\\d{2})$", "\\1\\2", x)
+  time <- as.POSIXct(x, format = "%Y-%m-%dT%H:%M:%S%z", tz = "UTC")
+  .POSIXct(as.numeric(time), tz = "")
 }
 
-#' The date a skill folder was created, or last modified where creation times
-#' are not recorded
+#' When a skill folder was created, or last modified where creation times are
+#' not recorded
 #'
 #' @keywords internal
 #' @noRd
-folder_date <- function(path) {
+folder_time <- function(path) {
   info <- fs::file_info(fs::path_real(path))
   time <- info$birth_time
   if (is.na(time)) {
     time <- info$modification_time
   }
-  as.Date(time, tz = Sys.timezone())
+  .POSIXct(as.numeric(time), tz = "")
+}
+
+#' A missing date-time
+#'
+#' @keywords internal
+#' @noRd
+no_time <- function() {
+  .POSIXct(NA_real_, tz = "")
 }
 
 `%|NA|%` <- function(x, y) if (is.na(x)) y else x
@@ -303,8 +320,8 @@ empty_skills <- function() {
     description = character(),
     installed_by = character(),
     installed_from = character(),
-    installed = as.Date(character()),
-    updated_on_github = as.Date(character()),
+    installed = .POSIXct(numeric(), tz = ""),
+    updated_on_github = .POSIXct(numeric(), tz = ""),
     scope = character(),
     found_in = character(),
     path = character(),

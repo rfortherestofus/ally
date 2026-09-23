@@ -69,7 +69,7 @@ unzip_archive <- function(archive) {
   top
 }
 
-#' The date a skill folder last changed on GitHub
+#' When a skill folder last changed on GitHub
 #'
 #' Reads the repository's commit feed for the folder,
 #' `github.com/<owner>/<repo>/commits/<ref>/<path>.atom`, which needs no token and is
@@ -97,12 +97,12 @@ github_last_changed <- function(owner, repo, path, ref = NA_character_) {
     warning = function(w) FALSE
   )
   if (!ok) {
-    return(as.Date(NA))
+    return(no_time())
   }
   atom_last_updated(readLines(feed, warn = FALSE, encoding = "UTF-8"))
 }
 
-#' The `<updated>` date of the newest entry in a GitHub commit feed
+#' The `<updated>` time of the newest entry in a GitHub commit feed
 #'
 #' @keywords internal
 #' @noRd
@@ -110,12 +110,12 @@ atom_last_updated <- function(lines) {
   text <- paste(lines, collapse = "\n")
   entry_start <- regexpr("<entry>", text, fixed = TRUE)
   if (entry_start < 0) {
-    return(as.Date(NA))
+    return(no_time())
   }
   entry <- substring(text, entry_start)
   updated <- regmatches(entry, regexpr("<updated>[^<]+</updated>", entry))
   if (length(updated) == 0) {
-    return(as.Date(NA))
+    return(no_time())
   }
-  timestamp_date(gsub("</?updated>", "", updated))
+  timestamp_time(gsub("</?updated>", "", updated))
 }

@@ -24,8 +24,9 @@ is in the \code{SKILL.md} at \code{path}.
 \item \code{installed_from}: the GitHub repository and folder, local path or link
 target the skill was installed from, such as
 \code{"posit-dev/skills/r-lib/r-cli-app"}, or \code{NA} when nothing recorded it.
-\item \code{installed}: the date this copy was installed or last updated.
-\item \code{updated_on_github}: the date the skill's folder last changed on GitHub,
+\item \code{installed}: when this copy was installed or last updated, in your time
+zone.
+\item \code{updated_on_github}: when the skill's folder last changed on GitHub,
 or \code{NA} for skills that did not come from GitHub.
 \item \code{scope}: \code{"project"} or \code{"user"}.
 \item \code{found_in}: the folders that hold the skill, such as \code{".agents, .claude"}.
@@ -49,12 +50,12 @@ that records it: the \code{.ally-source.json} that \code{\link[=install_skill]{i
 lockfile the \code{skills} command-line tool (\verb{npx skills}) keeps at
 \code{.agents/.skill-lock.json}. A skill that is a link to a folder elsewhere shows
 that folder as where it came from. Skills copied in by hand have none of this,
-so their install date is the date their folder was created.
+so their install time is when their folder was created.
 
 For skills installed from GitHub, \code{installed_skills()} also looks up when the
 skill's folder last changed there, using the repository's public commit feed.
 That needs no token and does not count against the GitHub API rate limit. If
-the date is newer than \code{installed}, \code{\link[=update_skill]{update_skill()}} will fetch a newer
+that time is later than \code{installed}, \code{\link[=update_skill]{update_skill()}} will fetch a newer
 version.
 
 Skills that come from Claude Code plugins live elsewhere and are not listed.
