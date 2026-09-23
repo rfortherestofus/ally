@@ -23,7 +23,7 @@ navbar:
 
 reference:
   - title: Skill installation
-    desc: Install, update, and remove agent skills.
+    desc: Install, list, update, and remove agent skills.
     contents:
       - install_skill
       - update_skill
