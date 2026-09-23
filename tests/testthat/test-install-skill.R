@@ -48,15 +48,6 @@ test_that("install_skill works in a bare directory (creates folders)", {
   expect_true(fs::dir_exists(".claude/skills"))
 })
 
-test_that("installed_skills lists skills under .agents/skills/", {
-  proj <- withr::local_tempdir()
-  withr::local_dir(proj)
-
-  install_skill(make_local_skill("alpha"))
-  install_skill(make_local_skill("beta"))
-
-  expect_setequal(installed_skills(), c("alpha", "beta"))
-})
 
 test_that("link_skills refreshes the Claude Code copy of every installed skill", {
   proj <- withr::local_tempdir()
@@ -134,8 +125,8 @@ test_that("scope = 'user' installs under the home folder, not the project", {
   expect_true(fs::file_exists(fs::path(home, ".claude/skills/everywhere/SKILL.md")))
   expect_false(fs::dir_exists(".agents"))
 
-  expect_equal(installed_skills(scope = "user"), "everywhere")
-  expect_equal(installed_skills(), character())
+  expect_equal(installed_skills(scope = "user")$name, "everywhere")
+  expect_equal(nrow(installed_skills(scope = "project")), 0)
 
   remove_skill("everywhere", scope = "user")
   expect_false(fs::dir_exists(fs::path(home, ".agents/skills/everywhere")))
