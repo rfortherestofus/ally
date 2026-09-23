@@ -5,6 +5,8 @@ write_skill <- function(dir, name, header = c("---", paste("name:", name), "desc
   skill
 }
 
+utc <- function(x) format(x, "%Y-%m-%d %H:%M:%S", tz = "UTC")
+
 skill_columns <- c(
   "name", "description", "installed_by", "installed_from", "installed",
   "updated_on_github", "scope", "found_in", "path"
@@ -16,7 +18,7 @@ local_skill_dirs <- function(env = parent.frame()) {
   withr::local_envvar(HOME = home, USERPROFILE = home, .local_envir = env)
   proj <- withr::local_tempdir(.local_envir = env)
   withr::local_dir(proj, .local_envir = env)
-  local_mocked_bindings(github_last_changed = function(...) as.Date(NA), .env = env)
+  local_mocked_bindings(github_last_changed = function(...) no_time(), .env = env)
   list(home = home, proj = proj)
 }
 
@@ -34,8 +36,9 @@ test_that("installed_skills lists an ally skill once, with its description and s
   expect_equal(res$description, "Does a thing.")
   expect_equal(res$installed_from, as.character(skill))
   expect_equal(res$installed_by, "ally")
-  expect_equal(res$installed, Sys.Date())
-  expect_equal(res$updated_on_github, as.Date(NA))
+  expect_s3_class(res$installed, "POSIXct")
+  expect_lt(abs(as.numeric(difftime(res$installed, Sys.time(), units = "secs"))), 60)
+  expect_equal(res$updated_on_github, no_time())
   expect_equal(res$scope, "project")
   expect_equal(res$found_in, ".agents, .claude")
   expect_match(res$path, ".agents/skills/alpha$")
@@ -122,7 +125,7 @@ test_that("installed_skills reads sources from the skills CLI lockfile", {
 
   expect_equal(res$installed_from, c("vercel-labs/skills/skills/find-skills", "owner/top-level"))
   expect_equal(res$installed_by, c("skills CLI", "skills CLI"))
-  expect_equal(res$installed[1], as.Date("2026-04-02"))
+  expect_equal(utc(res$installed[1]), "2026-04-02 09:00:00")
 })
 
 test_that("installed_skills returns an empty tibble when nothing is installed", {
@@ -168,7 +171,7 @@ test_that("installed_skills looks up GitHub dates for skills from GitHub", {
   calls <- list()
   local_mocked_bindings(github_last_changed = function(owner, repo, path, ref) {
     calls[[length(calls) + 1]] <<- list(owner = owner, repo = repo, path = path, ref = ref)
-    as.Date("2026-07-10")
+    timestamp_time("2026-07-10T20:54:38Z")
   })
   skill <- write_skill(fs::path(dirs$proj, ".agents/skills"), "from-github")
   write_source_metadata(skill, parse_source("owner/repo/skills/from-github@dev"))
@@ -176,12 +179,12 @@ test_that("installed_skills looks up GitHub dates for skills from GitHub", {
 
   res <- installed_skills(scope = "project")
 
-  expect_equal(res$updated_on_github, as.Date(c("2026-07-10", NA)))
+  expect_equal(utc(res$updated_on_github), c("2026-07-10 20:54:38", NA))
   expect_equal(calls, list(list(owner = "owner", repo = "repo", path = "skills/from-github", ref = "dev")))
 
   calls <- list()
   res <- installed_skills(scope = "project", check_github = FALSE)
-  expect_equal(res$updated_on_github, as.Date(c(NA, NA)))
+  expect_equal(utc(res$updated_on_github), c(NA_character_, NA_character_))
   expect_length(calls, 0)
 })
 
@@ -194,13 +197,15 @@ test_that("atom_last_updated reads the newest entry, not the feed header", {
     "</feed>"
   )
 
-  expect_equal(atom_last_updated(feed), as.Date("2026-07-10"))
-  expect_equal(atom_last_updated(c("<feed>", "<updated>2026-09-01T00:00:00Z</updated>", "</feed>")), as.Date(NA))
+  expect_equal(utc(atom_last_updated(feed)), "2026-07-10 20:54:38")
+  expect_equal(atom_last_updated(c("<feed>", "<updated>2026-09-01T00:00:00Z</updated>", "</feed>")), no_time())
 })
 
-test_that("timestamp_date reads ally and skills CLI timestamps", {
-  expect_equal(timestamp_date("2026-05-14T11:22:37-0700"), as.Date("2026-05-14"))
-  expect_equal(timestamp_date("2026-03-30T20:18:42.463Z"), as.Date("2026-03-30"))
-  expect_equal(timestamp_date(NA_character_), as.Date(NA))
-  expect_equal(timestamp_date("soon"), as.Date(NA))
+test_that("timestamp_time reads ally, skills CLI and GitHub timestamps", {
+  expect_equal(utc(timestamp_time("2026-05-14T11:22:37-0700")), "2026-05-14 18:22:37")
+  expect_equal(utc(timestamp_time("2026-03-30T20:18:42.463Z")), "2026-03-30 20:18:42")
+  expect_equal(utc(timestamp_time("2026-07-10T20:54:38+02:00")), "2026-07-10 18:54:38")
+  expect_equal(timestamp_time(NA_character_), no_time())
+  expect_equal(timestamp_time("2026-05-14"), no_time())
+  expect_equal(attr(timestamp_time("2026-03-30T20:18:42Z"), "tzone"), "")
 })
