@@ -94,7 +94,7 @@ Both copies are now in place:
 fs::dir_tree(project, all = TRUE)
 ```
 
-`installed_skills()` lists every skill an agent can load, with its description and where it came from. It looks in `.agents/skills/` and in each agent's own folder, so it also finds skills that other tools installed or that you copied in by hand. Here it looks only in the project:
+`installed_skills()` lists every skill an agent can load, with the start of its description, what installed it, where from, and when. It looks in `.agents/skills/` and in each agent's own folder, so it also finds skills that other tools installed or that you copied in by hand. Here it looks only in the project:
 
 ```{r}
 withr::with_dir(project, installed_skills(scope = "project"))
@@ -177,6 +177,14 @@ for (skill in skills$name[skills$installed_by %in% "ally"]) {
 ```
 
 Only skills that {ally} installed know their source, so the loop skips the others.
+
+To see which skills have changed since you installed them, compare two columns of `installed_skills()`. `installed` is the date you installed or last updated a skill, and `updated_on_github` is the date its folder last changed on GitHub:
+
+```{r}
+#| eval: false
+skills <- installed_skills(scope = "project")
+skills[which(skills$updated_on_github > skills$installed), ]
+```
 
 Skills installed with `scope = "user"` are updated the same way, with `scope = "user"` added to each call.
 

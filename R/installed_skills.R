@@ -10,24 +10,38 @@
 #' Claude Code copy ally makes, for instance) is listed once, with every folder
 #' it was found in.
 #'
-#' The source comes from the first of these that has one: the
-#' `.ally-source.json` that [install_skill()] writes, the lockfile the `skills`
-#' command-line tool (`npx skills`) keeps at `.agents/.skill-lock.json`, or the
-#' target of a link that points somewhere else. Skills copied in by hand have no
-#' recorded source.
+#' What installed a skill, where from, and when come from the first of these
+#' that records it: the `.ally-source.json` that [install_skill()] writes, or the
+#' lockfile the `skills` command-line tool (`npx skills`) keeps at
+#' `.agents/.skill-lock.json`. A skill that is a link to a folder elsewhere shows
+#' that folder as where it came from. Skills copied in by hand have none of this,
+#' so their install date is the date their folder was created.
+#'
+#' For skills installed from GitHub, `installed_skills()` also looks up when the
+#' skill's folder last changed there, using the repository's public commit feed.
+#' That needs no token and does not count against the GitHub API rate limit. If
+#' the date is newer than `installed`, [update_skill()] will fetch a newer
+#' version.
 #'
 #' Skills that come from Claude Code plugins live elsewhere and are not listed.
 #'
 #' @param scope Where to look: `"project"` (the working directory), `"user"`
 #'   (your home folder), or both, the default.
+#' @param check_github If `TRUE`, the default, look up when each GitHub skill
+#'   last changed. Set to `FALSE` to skip the lookup, when offline for instance.
 #'
 #' @return A tibble with one row per skill and columns:
 #'   * `name`: the skill's folder name.
-#'   * `description`: the `description` from the `SKILL.md` header, which agents
-#'     read to decide when to use the skill.
-#'   * `source`: where the skill came from, such as
-#'     `"posit-dev/skills/r-lib/r-cli-app"`, or `NA` if nothing recorded it.
-#'   * `installed_by`: `"ally"`, `"skills CLI"`, or `NA`.
+#'   * `description`: the start of the `description` from the `SKILL.md`
+#'     header, which agents read to decide when to use the skill. The full text
+#'     is in the `SKILL.md` at `path`.
+#'   * `installed_by`: `"ally"`, `"skills CLI"`, or `NA` when nothing recorded it.
+#'   * `installed_from`: the GitHub repository and folder, local path or link
+#'     target the skill was installed from, such as
+#'     `"posit-dev/skills/r-lib/r-cli-app"`, or `NA` when nothing recorded it.
+#'   * `installed`: the date this copy was installed or last updated.
+#'   * `updated_on_github`: the date the skill's folder last changed on GitHub,
+#'     or `NA` for skills that did not come from GitHub.
 #'   * `scope`: `"project"` or `"user"`.
 #'   * `found_in`: the folders that hold the skill, such as `".agents, .claude"`.
 #'   * `path`: the skill's folder, preferring the `.agents/skills/` copy.
@@ -35,9 +49,9 @@
 #' @examples
 #' \dontrun{
 #' installed_skills()
-#' installed_skills(scope = "user")
+#' installed_skills(scope = "user", check_github = FALSE)
 #' }
-installed_skills <- function(scope = c("project", "user")) {
+installed_skills <- function(scope = c("project", "user"), check_github = TRUE) {
   scope <- match.arg(scope, several.ok = TRUE)
 
   roots <- list(project = skills_root("project"), user = skills_root("user"))[scope]
@@ -46,7 +60,9 @@ installed_skills <- function(scope = c("project", "user")) {
     roots$project <- NULL
   }
 
-  rows <- lapply(names(roots), function(s) scan_skills(roots[[s]], scope = s))
+  rows <- lapply(names(roots), function(s) {
+    scan_skills(roots[[s]], scope = s, check_github = check_github)
+  })
   skills <- do.call(rbind, c(list(empty_skills()), rows))
   skills <- skills[order(match(skills$scope, c("project", "user")), skills$name), ]
   tibble::as_tibble(skills)
@@ -56,7 +72,7 @@ installed_skills <- function(scope = c("project", "user")) {
 #'
 #' @keywords internal
 #' @noRd
-scan_skills <- function(root, scope) {
+scan_skills <- function(root, scope, check_github = TRUE) {
   found <- lapply(skill_locations(), function(location) {
     folders <- skill_folders(fs::path(root, location))
     if (length(folders) == 0) {
@@ -82,11 +98,18 @@ scan_skills <- function(root, scope) {
   rows <- lapply(split(found, factor(found$name, unique(found$name))), function(copies) {
     main <- copies[1, ]
     origin <- skill_origin(main$path, main$is_link, lock[[main$name]])
+    github <- origin$github
     data.frame(
       name = main$name,
-      description = skill_description(fs::path(main$path, "SKILL.md")),
-      source = origin$source,
+      description = shorten(skill_description(fs::path(main$path, "SKILL.md"))),
       installed_by = origin$installed_by,
+      installed_from = origin$installed_from,
+      installed = timestamp_date(origin$installed_at) %|NA|% folder_date(main$path),
+      updated_on_github = if (check_github && !is.null(github)) {
+        github_last_changed(github$owner, github$repo, github$path, github$ref)
+      } else {
+        as.Date(NA)
+      },
       scope = scope,
       found_in = paste(unique(copies$found_in), collapse = ", "),
       path = main$path,
@@ -121,22 +144,37 @@ skill_folders <- function(dir) {
   stats::setNames(as.character(entries), fs::path_file(entries))
 }
 
-#' Where a skill came from and what installed it
+#' What installed a skill, where from, when, and its GitHub location if any
 #'
 #' @keywords internal
 #' @noRd
 skill_origin <- function(path, is_link, lock_entry) {
   metadata <- read_source_metadata(path)
   if (!is.null(metadata$source)) {
-    return(list(source = metadata$source, installed_by = "ally"))
+    github <- if (identical(metadata$type, "github")) {
+      tryCatch(parse_source(metadata$source), error = function(e) NULL)
+    }
+    return(list(
+      installed_by = "ally",
+      installed_from = metadata$source,
+      installed_at = metadata$installed_at %||% NA_character_,
+      github = github
+    ))
   }
   if (!is.null(lock_entry$source)) {
-    return(list(source = lock_source(lock_entry), installed_by = "skills CLI"))
+    return(list(
+      installed_by = "skills CLI",
+      installed_from = lock_source(lock_entry),
+      installed_at = lock_entry$updatedAt %||% lock_entry$installedAt %||% NA_character_,
+      github = lock_github(lock_entry)
+    ))
   }
-  if (is_link) {
-    return(list(source = pretty_path(fs::path_real(path)), installed_by = NA_character_))
-  }
-  list(source = NA_character_, installed_by = NA_character_)
+  list(
+    installed_by = NA_character_,
+    installed_from = if (is_link) pretty_path(fs::path_real(path)) else NA_character_,
+    installed_at = NA_character_,
+    github = NULL
+  )
 }
 
 #' Skills recorded by the `skills` command-line tool, keyed by skill name
@@ -164,6 +202,24 @@ lock_source <- function(entry) {
     }
   }
   entry$source
+}
+
+#' Where a `skills` CLI lockfile entry lives on GitHub, or `NULL`
+#'
+#' @keywords internal
+#' @noRd
+lock_github <- function(entry) {
+  parts <- strsplit(entry$source, "/", fixed = TRUE)[[1]]
+  if (!identical(entry$sourceType, "github") || length(parts) != 2) {
+    return(NULL)
+  }
+  skill_dir <- if (is.null(entry$skillPath)) "." else fs::path_dir(entry$skillPath)
+  list(
+    owner = parts[1],
+    repo = parts[2],
+    path = if (skill_dir == ".") "" else as.character(skill_dir),
+    ref = NA_character_
+  )
 }
 
 #' The `description` field from a SKILL.md header
@@ -202,14 +258,53 @@ skill_description <- function(skill_md) {
   trimws(gsub("\\s+", " ", description))
 }
 
+#' Cut text to `width` characters, ending in an ellipsis when shortened
+#'
+#' @keywords internal
+#' @noRd
+shorten <- function(x, width = 50) {
+  long <- !is.na(x) & nchar(x) > width
+  x[long] <- paste0(trimws(substr(x[long], 1, width - 1)), "\u2026")
+  x
+}
+
+#' The date part of an ISO 8601 timestamp such as `2026-05-14T11:22:37-0700`
+#'
+#' @keywords internal
+#' @noRd
+timestamp_date <- function(x) {
+  if (is.null(x) || is.na(x) || !grepl("^\\d{4}-\\d{2}-\\d{2}", x)) {
+    return(as.Date(NA))
+  }
+  as.Date(substr(x, 1, 10))
+}
+
+#' The date a skill folder was created, or last modified where creation times
+#' are not recorded
+#'
+#' @keywords internal
+#' @noRd
+folder_date <- function(path) {
+  info <- fs::file_info(fs::path_real(path))
+  time <- info$birth_time
+  if (is.na(time)) {
+    time <- info$modification_time
+  }
+  as.Date(time, tz = Sys.timezone())
+}
+
+`%|NA|%` <- function(x, y) if (is.na(x)) y else x
+
 #' @keywords internal
 #' @noRd
 empty_skills <- function() {
   data.frame(
     name = character(),
     description = character(),
-    source = character(),
     installed_by = character(),
+    installed_from = character(),
+    installed = as.Date(character()),
+    updated_on_github = as.Date(character()),
     scope = character(),
     found_in = character(),
     path = character(),
