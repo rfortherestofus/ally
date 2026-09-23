@@ -5,8 +5,9 @@ Authors@R:
     person("David", "Keyes", , "david@rfortherestofus.com", role = c("aut", "cre"))
 Description: Companion package to Ally, a subscription product from R for the
     Rest of Us aimed at R users navigating the AI transition. Provides
-    R-native tooling for working with AI coding assistants, starting with
-    installation and management of agent skills.
+    R-native tooling for working with AI coding assistants: installing and
+    managing agent skills, and finding and editing the instruction files
+    agents read.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -18,12 +19,14 @@ Imports:
     jsonlite,
     stats,
     tibble,
+    utils,
     withr,
     yaml
 Suggests:
     knitr,
     pkgdown,
     quarto,
+    rstudioapi,
     testthat (>= 3.0.0)
 VignetteBuilder: quarto
 Config/testthat/edition: 3
