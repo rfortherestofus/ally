@@ -10,6 +10,11 @@
 #' GitHub skills are fetched from the repository's zip archive: one download, no token,
 #' no API rate limit. Public repositories only.
 #'
+#' Installing a skill that is already there replaces it. `install_skill()` records a
+#' fingerprint of the skill's files, so if a copy has been edited since then, or was
+#' not installed by ally at all, it stops rather than lose that work. Pass
+#' `force = TRUE` to overwrite it anyway.
+#'
 #' @param source One of:
 #'   * A full GitHub URL, pasted straight from the browser, e.g.
 #'     `https://github.com/owner/repo/tree/main/path/to/skill`. A link to the
@@ -27,6 +32,9 @@
 #'   single set of files to edit. Falls back to copying where links can't be
 #'   created (typically Windows without developer mode). The default, `FALSE`,
 #'   copies.
+#' @param force If `FALSE`, the default, stop rather than overwrite a copy of the
+#'   skill that has been edited since it was installed or that ally did not
+#'   install. `TRUE` overwrites it.
 #'
 #' @return Invisibly, a list describing the install.
 #' @export
@@ -44,7 +52,7 @@
 #' # Local path
 #' install_skill("~/my-skills/r-style-guide")
 #' }
-install_skill <- function(source, scope = c("project", "user"), link = FALSE) {
+install_skill <- function(source, scope = c("project", "user"), link = FALSE, force = FALSE) {
   scope <- match.arg(scope)
   parsed <- parse_source(source)
   skill_name <- parsed$skill_name
@@ -52,6 +60,13 @@ install_skill <- function(source, scope = c("project", "user"), link = FALSE) {
   root <- skills_root(scope)
   canonical_root <- canonical_skills_dir(root)
   skill_dir <- fs::path(canonical_root, skill_name)
+
+  if (!force) {
+    changes <- local_changes(skill_name, root)
+    if (length(changes) > 0) {
+      abort_local_changes(skill_name, changes)
+    }
+  }
 
   staging <- withr::local_tempfile()
   fetch_skill(parsed, staging)

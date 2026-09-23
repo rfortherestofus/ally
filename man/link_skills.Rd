@@ -4,7 +4,7 @@
 \alias{link_skills}
 \title{Refresh the Claude Code copies of installed skills}
 \usage{
-link_skills(scope = c("project", "user"), link = FALSE)
+link_skills(scope = c("project", "user"), link = FALSE, force = FALSE)
 }
 \arguments{
 \item{scope}{\code{"project"} installs into the current working directory,
@@ -15,6 +15,10 @@ pointing at the \code{.agents/skills} copy instead of a second copy, so there is
 single set of files to edit. Falls back to copying where links can't be
 created (typically Windows without developer mode). The default, \code{FALSE},
 copies.}
+
+\item{force}{If \code{FALSE}, the default, stop rather than overwrite a copy of the
+skill that has been edited since it was installed or that ally did not
+install. \code{TRUE} overwrites it.}
 }
 \value{
 Invisibly, a list with one entry per skill describing the links
@@ -25,4 +29,9 @@ Walks every skill in \verb{.agents/skills/} and (re)creates the
 \verb{.claude/skills/<skill>} copy, or link with \code{link = TRUE}, for each.
 Useful after editing a skill by hand or deleting a copy. Codex reads
 \verb{.agents/skills/} directly, so no work is needed for it.
+}
+\details{
+Edit the \verb{.agents/skills/} copy, not the Claude Code one: the Claude Code copy
+is what gets replaced. A skill whose Claude Code copy has been edited is
+skipped with a warning, unless \code{force = TRUE}.
 }

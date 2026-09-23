@@ -111,7 +111,8 @@ write_source_metadata <- function(skill_dir, parsed) {
     },
     type = parsed$type,
     skill_name = parsed$skill_name,
-    installed_at = format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z")
+    installed_at = format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z"),
+    files_hash = skill_hash(skill_dir)
   )
   jsonlite::write_json(
     metadata,

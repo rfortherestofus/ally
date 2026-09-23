@@ -1,7 +1,9 @@
 #' Update an installed skill from its original source
 #'
 #' Re-fetches the skill from whatever source it was installed from (recorded
-#' in `.ally-source.json`) and refreshes the Claude Code copy.
+#' in `.ally-source.json`) and refreshes the Claude Code copy. If either copy has
+#' been edited since it was installed, it stops rather than lose the edits; pass
+#' `force = TRUE` to overwrite them.
 #'
 #' @param skill Name of the installed skill (matches the directory name in
 #'   `.agents/skills/`).
@@ -9,7 +11,7 @@
 #'
 #' @return Invisibly, the result of [install_skill()].
 #' @export
-update_skill <- function(skill, scope = c("project", "user"), link = FALSE) {
+update_skill <- function(skill, scope = c("project", "user"), link = FALSE, force = FALSE) {
   scope <- match.arg(scope)
   canonical_root <- canonical_skills_dir(skills_root(scope))
   skill_dir <- fs::path(canonical_root, skill)
@@ -29,9 +31,16 @@ update_skill <- function(skill, scope = c("project", "user"), link = FALSE) {
     ))
   }
 
+  if (!force) {
+    changes <- local_changes(skill, skills_root(scope))
+    if (length(changes) > 0) {
+      abort_local_changes(skill, changes)
+    }
+  }
+
   cli::cli_alert_info(
     "Updating {.val {skill}} from {.val {metadata$source}}"
   )
 
-  install_skill(source = metadata$source, scope = scope, link = link)
+  install_skill(source = metadata$source, scope = scope, link = link, force = force)
 }

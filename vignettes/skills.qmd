@@ -156,12 +156,12 @@ GitHub skills are fetched from the repository's zip archive: a single download t
 ```{r}
 #| eval: false
 installed_skills()
-#> # A tibble: 3 × 9
-#>   name         description installed_by installed_from installed           updated_on_github   scope
-#>   <chr>        <chr>       <chr>        <chr>          <dttm>              <dttm>              <chr>
-#> 1 my-notes     How I like… <NA>         <NA>           2026-09-23 12:04:47 NA                  user
-#> 2 quarto-auth… Use when t… ally         posit-dev/ski… 2026-09-23 12:04:46 2026-05-01 08:28:25 user
-#> 3 r-cli-app    Build comm… ally         posit-dev/ski… 2026-09-23 12:04:47 2026-04-20 13:43:24 user
+#> # A tibble: 3 × 10
+#>   name  description installed_by installed_from installed           updated_on_github   edited scope
+#>   <chr> <chr>       <chr>        <chr>          <dttm>              <dttm>              <lgl>  <chr>
+#> 1 my-n… How I like… <NA>         <NA>           2026-09-23 12:14:57 NA                  NA     user
+#> 2 quar… Use when t… ally         posit-dev/ski… 2026-09-23 12:14:56 2026-05-01 08:28:25 FALSE  user
+#> 3 r-cl… Build comm… ally         posit-dev/ski… 2026-09-23 12:14:57 2026-04-20 13:43:24 FALSE  user
 #> # ℹ 2 more variables: found_in <chr>, path <chr>
 ```
 
@@ -175,6 +175,7 @@ Each row is one skill. A skill found in several folders, such as the two copies 
 | `installed_from` | The GitHub repository and folder, or local path, the skill was installed from. |
 | `installed` | When this copy was installed or last updated, in your time zone. |
 | `updated_on_github` | When the skill's folder last changed on GitHub. |
+| `edited` | Whether any copy of the skill has changed since {ally} installed it. `NA` for skills {ally} did not install. |
 | `scope` | `"project"` or `"user"`. |
 | `found_in` | The folders that hold the skill, such as `".agents, .claude"`. |
 | `path` | The skill's folder. |
@@ -200,7 +201,24 @@ update_skill("quarto-authoring")
 #> ✔ Copied to "Claude Code" ('~/projects/report/.claude/skills')
 ```
 
-`update_skill()` fetches the skill again from its original source, replaces the canonical copy, and refreshes the Claude Code copy. To bring every skill in a project up to date at once:
+`update_skill()` fetches the skill again from its original source, replaces the canonical copy, and refreshes the Claude Code copy.
+
+Replacing a skill would throw away any changes you have made to it, so {ally} checks first. `install_skill()` records a fingerprint of the skill's files, and if either copy has been edited since then, `update_skill()` stops and names the edited files instead:
+
+```{r}
+#| eval: false
+update_skill("quarto-authoring")
+#> Error in `update_skill()`:
+#> ! Not overwriting "quarto-authoring", which has local changes.
+#> ✖ '~/projects/report/.agents/skills/quarto-authoring' has been edited since it was installed.
+#> ℹ Copy anything you want to keep, then run again with `force = TRUE` to overwrite it.
+```
+
+Save your changes somewhere else, then run `update_skill("quarto-authoring", force = TRUE)` to get the new version. `install_skill()` does the same check, and also stops rather than overwrite a skill folder that {ally} did not install. The `edited` column of `installed_skills()` shows which skills have changes.
+
+Skills installed before {ally} recorded fingerprints show `NA` in the `edited` column and are not protected. Updating them once records a fingerprint from then on.
+
+To bring every skill in a project up to date at once:
 
 ```{r}
 #| eval: false
@@ -210,7 +228,7 @@ for (skill in skills$name[skills$installed_by %in% "ally"]) {
 }
 ```
 
-Only skills that {ally} installed know their source, so the loop skips the others.
+Only skills that {ally} installed know their source, so the loop skips the others. A skill with local changes stops the loop with an error, so nothing is lost.
 
 To see which skills have changed since you installed them, compare two columns of `installed_skills()`. `installed` is when you installed or last updated a skill, and `updated_on_github` is when its folder last changed on GitHub:
 
@@ -228,6 +246,8 @@ If you edit a skill by hand in `.agents/skills/`, or delete the Claude Code copy
 #| eval: false
 link_skills()
 ```
+
+Make your edits in `.agents/skills/`, the copy every agent's copy is made from. If the Claude Code copy has been edited, `link_skills()` skips that skill with a warning rather than overwrite it; pass `force = TRUE` to overwrite it anyway.
 
 Prefer a single set of files? Pass `link = TRUE` to `install_skill()`, `update_skill()`, or `link_skills()` and {ally} puts a relative symlink at `.claude/skills/<skill>` pointing back to the canonical copy instead of a second copy. Where symlinks are not supported (typically Windows without developer mode) it falls back to copying and tells you so.
 
