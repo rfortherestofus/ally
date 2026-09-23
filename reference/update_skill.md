@@ -1,12 +1,14 @@
 # Update an installed skill from its original source
 
 Re-fetches the skill from whatever source it was installed from
-(recorded in `.ally-source.json`) and refreshes the Claude Code copy.
+(recorded in `.ally-source.json`) and refreshes the Claude Code copy. If
+either copy has been edited since it was installed, it stops rather than
+lose the edits; pass `force = TRUE` to overwrite them.
 
 ## Usage
 
 ``` r
-update_skill(skill, scope = c("project", "user"), link = FALSE)
+update_skill(skill, scope = c("project", "user"), link = FALSE, force = FALSE)
 ```
 
 ## Arguments
@@ -28,6 +30,12 @@ update_skill(skill, scope = c("project", "user"), link = FALSE)
   single set of files to edit. Falls back to copying where links can't
   be created (typically Windows without developer mode). The default,
   `FALSE`, copies.
+
+- force:
+
+  If `FALSE`, the default, stop rather than overwrite a copy of the
+  skill that has been edited since it was installed or that ally did not
+  install. `TRUE` overwrites it.
 
 ## Value
 

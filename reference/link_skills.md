@@ -8,7 +8,7 @@ Useful after editing a skill by hand or deleting a copy. Codex reads
 ## Usage
 
 ``` r
-link_skills(scope = c("project", "user"), link = FALSE)
+link_skills(scope = c("project", "user"), link = FALSE, force = FALSE)
 ```
 
 ## Arguments
@@ -26,7 +26,19 @@ link_skills(scope = c("project", "user"), link = FALSE)
   be created (typically Windows without developer mode). The default,
   `FALSE`, copies.
 
+- force:
+
+  If `FALSE`, the default, stop rather than overwrite a copy of the
+  skill that has been edited since it was installed or that ally did not
+  install. `TRUE` overwrites it.
+
 ## Value
 
 Invisibly, a list with one entry per skill describing the links created
 or refreshed.
+
+## Details
+
+Edit the `.agents/skills/` copy, not the Claude Code one: the Claude
+Code copy is what gets replaced. A skill whose Claude Code copy has been
+edited is skipped with a warning, unless `force = TRUE`.

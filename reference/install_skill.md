@@ -10,7 +10,12 @@ home folder and every project on the computer can use the skill.
 ## Usage
 
 ``` r
-install_skill(source, scope = c("project", "user"), link = FALSE)
+install_skill(
+  source,
+  scope = c("project", "user"),
+  link = FALSE,
+  force = FALSE
+)
 ```
 
 ## Arguments
@@ -45,6 +50,12 @@ install_skill(source, scope = c("project", "user"), link = FALSE)
   be created (typically Windows without developer mode). The default,
   `FALSE`, copies.
 
+- force:
+
+  If `FALSE`, the default, stop rather than overwrite a copy of the
+  skill that has been edited since it was installed or that ally did not
+  install. `TRUE` overwrites it.
+
 ## Value
 
 Invisibly, a list describing the install.
@@ -53,6 +64,11 @@ Invisibly, a list describing the install.
 
 GitHub skills are fetched from the repository's zip archive: one
 download, no token, no API rate limit. Public repositories only.
+
+Installing a skill that is already there replaces it. `install_skill()`
+records a fingerprint of the skill's files, so if a copy has been edited
+since then, or was not installed by ally at all, it stops rather than
+lose that work. Pass `force = TRUE` to overwrite it anyway.
 
 ## Examples
 

@@ -100,14 +100,19 @@
 <p><code><a href="reference/installed_skills.html">installed_skills()</a></code> lists every skill an agent can load, in the project and in your home folder, whether {ally} installed it or not:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">ally</span><span class="fu">::</span><span class="fu"><a href="reference/installed_skills.html">installed_skills</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 3 × 9</span></span>
-<span><span class="co">#&gt;   name         description installed_by installed_from installed           updated_on_github   scope</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt;        &lt;chr&gt;          &lt;dttm&gt;              &lt;dttm&gt;              &lt;chr&gt;</span></span>
-<span><span class="co">#&gt; 1 my-notes     How I like… &lt;NA&gt;         &lt;NA&gt;           2026-09-23 12:04:47 NA                  user</span></span>
-<span><span class="co">#&gt; 2 quarto-auth… Use when t… ally         posit-dev/ski… 2026-09-23 12:04:46 2026-05-01 08:28:25 user</span></span>
-<span><span class="co">#&gt; 3 r-cli-app    Build comm… ally         posit-dev/ski… 2026-09-23 12:04:47 2026-04-20 13:43:24 user</span></span>
+<span><span class="co">#&gt; # A tibble: 3 × 10</span></span>
+<span><span class="co">#&gt;   name  description installed_by installed_from installed           updated_on_github   edited scope</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt;        &lt;chr&gt;          &lt;dttm&gt;              &lt;dttm&gt;              &lt;lgl&gt;  &lt;chr&gt;</span></span>
+<span><span class="co">#&gt; 1 my-n… How I like… &lt;NA&gt;         &lt;NA&gt;           2026-09-23 12:14:57 NA                  NA     user</span></span>
+<span><span class="co">#&gt; 2 quar… Use when t… ally         posit-dev/ski… 2026-09-23 12:14:56 2026-05-01 08:28:25 FALSE  user</span></span>
+<span><span class="co">#&gt; 3 r-cl… Build comm… ally         posit-dev/ski… 2026-09-23 12:14:57 2026-04-20 13:43:24 FALSE  user</span></span>
 <span><span class="co">#&gt; # ℹ 2 more variables: found_in &lt;chr&gt;, path &lt;chr&gt;</span></span></code></pre></div>
-<p>It shows what installed each skill, where from, when, and when the skill last changed on GitHub, so you can see which ones have a newer version. Skills that were copied in by hand have no record of where they came from, so those columns are <code>NA</code>.</p>
+<p>It shows what installed each skill, where from, when, when the skill last changed on GitHub, and whether you have edited it. Skills that were copied in by hand have no record of where they came from, so those columns are <code>NA</code>.</p>
+</div>
+<div class="section level2">
+<h2 id="your-edits-are-safe">Your edits are safe<a class="anchor" aria-label="anchor" href="#your-edits-are-safe"></a>
+</h2>
+<p><code><a href="reference/install_skill.html">install_skill()</a></code> records a fingerprint of each skill’s files. If you edit a skill, <code><a href="reference/update_skill.html">update_skill()</a></code>, <code><a href="reference/install_skill.html">install_skill()</a></code> and <code><a href="reference/link_skills.html">link_skills()</a></code> stop rather than overwrite your changes, and tell you which files changed. Pass <code>force = TRUE</code> to overwrite them anyway.</p>
 </div>
 <div class="section level2">
 <h2 id="how-it-works">How it works<a class="anchor" aria-label="anchor" href="#how-it-works"></a>

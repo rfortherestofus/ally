@@ -58,7 +58,12 @@ use the skill.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">install_skill</span><span class="op">(</span><span class="va">source</span>, scope <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"project"</span>, <span class="st">"user"</span><span class="op">)</span>, link <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">install_skill</span><span class="op">(</span></span>
+<span>  <span class="va">source</span>,</span>
+<span>  scope <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"project"</span>, <span class="st">"user"</span><span class="op">)</span>,</span>
+<span>  link <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  force <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -90,6 +95,12 @@ single set of files to edit. Falls back to copying where links can't be
 created (typically Windows without developer mode). The default, <code>FALSE</code>,
 copies.</p></dd>
 
+
+<dt id="arg-force">force<a class="anchor" aria-label="anchor" href="#arg-force"></a></dt>
+<dd><p>If <code>FALSE</code>, the default, stop rather than overwrite a copy of the
+skill that has been edited since it was installed or that ally did not
+install. <code>TRUE</code> overwrites it.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -99,6 +110,10 @@ copies.</p></dd>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>GitHub skills are fetched from the repository's zip archive: one download, no token,
 no API rate limit. Public repositories only.</p>
+<p>Installing a skill that is already there replaces it. <code>install_skill()</code> records a
+fingerprint of the skill's files, so if a copy has been edited since then, or was
+not installed by ally at all, it stops rather than lose that work. Pass
+<code>force = TRUE</code> to overwrite it anyway.</p>
     </div>
 
     <div class="section level2">

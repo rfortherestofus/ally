@@ -49,6 +49,13 @@ A tibble with one row per skill and columns:
 - `updated_on_github`: when the skill's folder last changed on GitHub,
   or `NA` for skills that did not come from GitHub.
 
+- `edited`: `TRUE` if any copy of the skill has changed since ally
+  installed it, `FALSE` if none has, or `NA` when there is nothing to
+  compare with: skills ally did not install, or installed before it
+  recorded a fingerprint of each skill's files.
+  [`update_skill()`](https://rfortherestofus.github.io/ally/reference/update_skill.md)
+  will not overwrite an edited skill without `force = TRUE`.
+
 - `scope`: `"project"` or `"user"`.
 
 - `found_in`: the folders that hold the skill, such as

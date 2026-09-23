@@ -101,9 +101,9 @@ just for this call:
 ``` r
 
 withr::with_dir(project, install_skill(skill))
-#> ✔ Installed "r-style-guide" to '/tmp/RtmpHXfpKg/my-project/.agents/skills/r-style-guide'
+#> ✔ Installed "r-style-guide" to '/tmp/RtmpVKX3M0/my-project/.agents/skills/r-style-guide'
 #> ℹ Codex and other agents read '.agents/skills/' directly.
-#> ✔ Copied to "Claude Code" ('/tmp/RtmpHXfpKg/my-project/.claude/skills')
+#> ✔ Copied to "Claude Code" ('/tmp/RtmpVKX3M0/my-project/.claude/skills')
 ```
 
 Both copies are now in place:
@@ -111,7 +111,7 @@ Both copies are now in place:
 ``` r
 
 fs::dir_tree(project, all = TRUE)
-#> /tmp/RtmpHXfpKg/my-project
+#> /tmp/RtmpVKX3M0/my-project
 #> ├── .agents
 #> │   └── skills
 #> │       └── r-style-guide
@@ -131,12 +131,12 @@ installed](#see-what-is-installed) for what each column means):
 ``` r
 
 withr::with_dir(project, installed_skills(scope = "project"))
-#> # A tibble: 1 × 9
+#> # A tibble: 1 × 10
 #>   name          description      installed_by installed_from installed          
 #>   <chr>         <chr>            <chr>        <chr>          <dttm>             
-#> 1 r-style-guide House style for… ally         /tmp/RtmpHXfp… 2026-09-23 19:08:11
-#> # ℹ 4 more variables: updated_on_github <dttm>, scope <chr>, found_in <chr>,
-#> #   path <chr>
+#> 1 r-style-guide House style for… ally         /tmp/RtmpVKX3… 2026-09-23 19:17:48
+#> # ℹ 5 more variables: updated_on_github <dttm>, edited <lgl>, scope <chr>,
+#> #   found_in <chr>, path <chr>
 ```
 
 And
@@ -146,8 +146,8 @@ deletes both copies:
 ``` r
 
 withr::with_dir(project, remove_skill("r-style-guide"))
-#> ✔ Removed copy at '/tmp/RtmpHXfpKg/my-project/.claude/skills/r-style-guide'
-#> ✔ Removed canonical copy at '/tmp/RtmpHXfpKg/my-project/.agents/skills/r-style-guide'
+#> ✔ Removed copy at '/tmp/RtmpVKX3M0/my-project/.claude/skills/r-style-guide'
+#> ✔ Removed canonical copy at '/tmp/RtmpVKX3M0/my-project/.agents/skills/r-style-guide'
 ```
 
 ## This project or every project
@@ -213,12 +213,12 @@ each agent’s own folder (`.claude/skills/`, `.codex/skills/`,
 ``` r
 
 installed_skills()
-#> # A tibble: 3 × 9
-#>   name         description installed_by installed_from installed           updated_on_github   scope
-#>   <chr>        <chr>       <chr>        <chr>          <dttm>              <dttm>              <chr>
-#> 1 my-notes     How I like… <NA>         <NA>           2026-09-23 12:04:47 NA                  user
-#> 2 quarto-auth… Use when t… ally         posit-dev/ski… 2026-09-23 12:04:46 2026-05-01 08:28:25 user
-#> 3 r-cli-app    Build comm… ally         posit-dev/ski… 2026-09-23 12:04:47 2026-04-20 13:43:24 user
+#> # A tibble: 3 × 10
+#>   name  description installed_by installed_from installed           updated_on_github   edited scope
+#>   <chr> <chr>       <chr>        <chr>          <dttm>              <dttm>              <lgl>  <chr>
+#> 1 my-n… How I like… <NA>         <NA>           2026-09-23 12:14:57 NA                  NA     user
+#> 2 quar… Use when t… ally         posit-dev/ski… 2026-09-23 12:14:56 2026-05-01 08:28:25 FALSE  user
+#> 3 r-cl… Build comm… ally         posit-dev/ski… 2026-09-23 12:14:57 2026-04-20 13:43:24 FALSE  user
 #> # ℹ 2 more variables: found_in <chr>, path <chr>
 ```
 
@@ -235,6 +235,7 @@ makes, appears once.
 | `installed_from` | The GitHub repository and folder, or local path, the skill was installed from. |
 | `installed` | When this copy was installed or last updated, in your time zone. |
 | `updated_on_github` | When the skill’s folder last changed on GitHub. |
+| `edited` | Whether any copy of the skill has changed since {ally} installed it. `NA` for skills {ally} did not install. |
 | `scope` | `"project"` or `"user"`. |
 | `found_in` | The folders that hold the skill, such as `".agents, .claude"`. |
 | `path` | The skill’s folder. |
@@ -277,8 +278,38 @@ update_skill("quarto-authoring")
 
 [`update_skill()`](https://rfortherestofus.github.io/ally/reference/update_skill.md)
 fetches the skill again from its original source, replaces the canonical
-copy, and refreshes the Claude Code copy. To bring every skill in a
-project up to date at once:
+copy, and refreshes the Claude Code copy.
+
+Replacing a skill would throw away any changes you have made to it, so
+{ally} checks first.
+[`install_skill()`](https://rfortherestofus.github.io/ally/reference/install_skill.md)
+records a fingerprint of the skill’s files, and if either copy has been
+edited since then,
+[`update_skill()`](https://rfortherestofus.github.io/ally/reference/update_skill.md)
+stops and names the edited files instead:
+
+``` r
+
+update_skill("quarto-authoring")
+#> Error in `update_skill()`:
+#> ! Not overwriting "quarto-authoring", which has local changes.
+#> ✖ '~/projects/report/.agents/skills/quarto-authoring' has been edited since it was installed.
+#> ℹ Copy anything you want to keep, then run again with `force = TRUE` to overwrite it.
+```
+
+Save your changes somewhere else, then run
+`update_skill("quarto-authoring", force = TRUE)` to get the new version.
+[`install_skill()`](https://rfortherestofus.github.io/ally/reference/install_skill.md)
+does the same check, and also stops rather than overwrite a skill folder
+that {ally} did not install. The `edited` column of
+[`installed_skills()`](https://rfortherestofus.github.io/ally/reference/installed_skills.md)
+shows which skills have changes.
+
+Skills installed before {ally} recorded fingerprints show `NA` in the
+`edited` column and are not protected. Updating them once records a
+fingerprint from then on.
+
+To bring every skill in a project up to date at once:
 
 ``` r
 
@@ -289,7 +320,8 @@ for (skill in skills$name[skills$installed_by %in% "ally"]) {
 ```
 
 Only skills that {ally} installed know their source, so the loop skips
-the others.
+the others. A skill with local changes stops the loop with an error, so
+nothing is lost.
 
 To see which skills have changed since you installed them, compare two
 columns of
@@ -316,6 +348,12 @@ anything:
 
 link_skills()
 ```
+
+Make your edits in `.agents/skills/`, the copy every agent’s copy is
+made from. If the Claude Code copy has been edited,
+[`link_skills()`](https://rfortherestofus.github.io/ally/reference/link_skills.md)
+skips that skill with a warning rather than overwrite it; pass
+`force = TRUE` to overwrite it anyway.
 
 Prefer a single set of files? Pass `link = TRUE` to
 [`install_skill()`](https://rfortherestofus.github.io/ally/reference/install_skill.md),

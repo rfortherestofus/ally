@@ -151,15 +151,15 @@
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_dir.html" class="external-link">with_dir</a></span><span class="op">(</span><span class="va">project</span>, <span class="fu"><a href="../reference/install_skill.html">install_skill</a></span><span class="op">(</span><span class="va">skill</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✔ Installed "r-style-guide" to '/tmp/RtmpHXfpKg/my-project/.agents/skills/r-style-guide'</span></span>
+<span><span class="co">#&gt; ✔ Installed "r-style-guide" to '/tmp/RtmpVKX3M0/my-project/.agents/skills/r-style-guide'</span></span>
 <span><span class="co">#&gt; ℹ Codex and other agents read '.agents/skills/' directly.</span></span>
-<span><span class="co">#&gt; ✔ Copied to "Claude Code" ('/tmp/RtmpHXfpKg/my-project/.claude/skills')</span></span></code></pre></div>
+<span><span class="co">#&gt; ✔ Copied to "Claude Code" ('/tmp/RtmpVKX3M0/my-project/.claude/skills')</span></span></code></pre></div>
 </div>
 <p>Both copies are now in place:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/dir_tree.html" class="external-link">dir_tree</a></span><span class="op">(</span><span class="va">project</span>, all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; /tmp/RtmpHXfpKg/my-project</span></span>
+<span><span class="co">#&gt; /tmp/RtmpVKX3M0/my-project</span></span>
 <span><span class="co">#&gt; ├── .agents</span></span>
 <span><span class="co">#&gt; │   └── skills</span></span>
 <span><span class="co">#&gt; │       └── r-style-guide</span></span>
@@ -175,19 +175,19 @@
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_dir.html" class="external-link">with_dir</a></span><span class="op">(</span><span class="va">project</span>, <span class="fu"><a href="../reference/installed_skills.html">installed_skills</a></span><span class="op">(</span>scope <span class="op">=</span> <span class="st">"project"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 1 × 9</span></span>
+<span><span class="co">#&gt; # A tibble: 1 × 10</span></span>
 <span><span class="co">#&gt;   name          description      installed_by installed_from installed          </span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;         &lt;chr&gt;            &lt;chr&gt;        &lt;chr&gt;          &lt;dttm&gt;             </span></span>
-<span><span class="co">#&gt; 1 r-style-guide House style for… ally         /tmp/RtmpHXfp… 2026-09-23 19:08:11</span></span>
-<span><span class="co">#&gt; # ℹ 4 more variables: updated_on_github &lt;dttm&gt;, scope &lt;chr&gt;, found_in &lt;chr&gt;,</span></span>
-<span><span class="co">#&gt; #   path &lt;chr&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 r-style-guide House style for… ally         /tmp/RtmpVKX3… 2026-09-23 19:17:48</span></span>
+<span><span class="co">#&gt; # ℹ 5 more variables: updated_on_github &lt;dttm&gt;, edited &lt;lgl&gt;, scope &lt;chr&gt;,</span></span>
+<span><span class="co">#&gt; #   found_in &lt;chr&gt;, path &lt;chr&gt;</span></span></code></pre></div>
 </div>
 <p>And <code><a href="../reference/remove_skill.html">remove_skill()</a></code> deletes both copies:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_dir.html" class="external-link">with_dir</a></span><span class="op">(</span><span class="va">project</span>, <span class="fu"><a href="../reference/remove_skill.html">remove_skill</a></span><span class="op">(</span><span class="st">"r-style-guide"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✔ Removed copy at '/tmp/RtmpHXfpKg/my-project/.claude/skills/r-style-guide'</span></span>
-<span><span class="co">#&gt; ✔ Removed canonical copy at '/tmp/RtmpHXfpKg/my-project/.agents/skills/r-style-guide'</span></span></code></pre></div>
+<span><span class="co">#&gt; ✔ Removed copy at '/tmp/RtmpVKX3M0/my-project/.claude/skills/r-style-guide'</span></span>
+<span><span class="co">#&gt; ✔ Removed canonical copy at '/tmp/RtmpVKX3M0/my-project/.agents/skills/r-style-guide'</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="this-project-or-every-project">This project or every project<a class="anchor" aria-label="anchor" href="#this-project-or-every-project"></a>
 </h2>
@@ -232,12 +232,12 @@
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/installed_skills.html">installed_skills</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 3 × 9</span></span>
-<span><span class="co">#&gt;   name         description installed_by installed_from installed           updated_on_github   scope</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt;        &lt;chr&gt;          &lt;dttm&gt;              &lt;dttm&gt;              &lt;chr&gt;</span></span>
-<span><span class="co">#&gt; 1 my-notes     How I like… &lt;NA&gt;         &lt;NA&gt;           2026-09-23 12:04:47 NA                  user</span></span>
-<span><span class="co">#&gt; 2 quarto-auth… Use when t… ally         posit-dev/ski… 2026-09-23 12:04:46 2026-05-01 08:28:25 user</span></span>
-<span><span class="co">#&gt; 3 r-cli-app    Build comm… ally         posit-dev/ski… 2026-09-23 12:04:47 2026-04-20 13:43:24 user</span></span>
+<span><span class="co">#&gt; # A tibble: 3 × 10</span></span>
+<span><span class="co">#&gt;   name  description installed_by installed_from installed           updated_on_github   edited scope</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt;        &lt;chr&gt;          &lt;dttm&gt;              &lt;dttm&gt;              &lt;lgl&gt;  &lt;chr&gt;</span></span>
+<span><span class="co">#&gt; 1 my-n… How I like… &lt;NA&gt;         &lt;NA&gt;           2026-09-23 12:14:57 NA                  NA     user</span></span>
+<span><span class="co">#&gt; 2 quar… Use when t… ally         posit-dev/ski… 2026-09-23 12:14:56 2026-05-01 08:28:25 FALSE  user</span></span>
+<span><span class="co">#&gt; 3 r-cl… Build comm… ally         posit-dev/ski… 2026-09-23 12:14:57 2026-04-20 13:43:24 FALSE  user</span></span>
 <span><span class="co">#&gt; # ℹ 2 more variables: found_in &lt;chr&gt;, path &lt;chr&gt;</span></span></code></pre></div>
 </div>
 <p>Each row is one skill. A skill found in several folders, such as the two copies <code><a href="../reference/install_skill.html">install_skill()</a></code> makes, appears once.</p>
@@ -277,15 +277,19 @@
 <td>When the skill’s folder last changed on GitHub.</td>
 </tr>
 <tr class="odd">
+<td><code>edited</code></td>
+<td>Whether any copy of the skill has changed since {ally} installed it. <code>NA</code> for skills {ally} did not install.</td>
+</tr>
+<tr class="even">
 <td><code>scope</code></td>
 <td>
 <code>"project"</code> or <code>"user"</code>.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>found_in</code></td>
 <td>The folders that hold the skill, such as <code>".agents, .claude"</code>.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>path</code></td>
 <td>The skill’s folder.</td>
 </tr>
@@ -306,27 +310,40 @@
 <span><span class="co">#&gt; ℹ Codex and other agents read '.agents/skills/' directly.</span></span>
 <span><span class="co">#&gt; ✔ Copied to "Claude Code" ('~/projects/report/.claude/skills')</span></span></code></pre></div>
 </div>
-<p><code><a href="../reference/update_skill.html">update_skill()</a></code> fetches the skill again from its original source, replaces the canonical copy, and refreshes the Claude Code copy. To bring every skill in a project up to date at once:</p>
+<p><code><a href="../reference/update_skill.html">update_skill()</a></code> fetches the skill again from its original source, replaces the canonical copy, and refreshes the Claude Code copy.</p>
+<p>Replacing a skill would throw away any changes you have made to it, so {ally} checks first. <code><a href="../reference/install_skill.html">install_skill()</a></code> records a fingerprint of the skill’s files, and if either copy has been edited since then, <code><a href="../reference/update_skill.html">update_skill()</a></code> stops and names the edited files instead:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/update_skill.html">update_skill</a></span><span class="op">(</span><span class="st">"quarto-authoring"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error in `update_skill()`:</span></span>
+<span><span class="co">#&gt; ! Not overwriting "quarto-authoring", which has local changes.</span></span>
+<span><span class="co">#&gt; ✖ '~/projects/report/.agents/skills/quarto-authoring' has been edited since it was installed.</span></span>
+<span><span class="co">#&gt; ℹ Copy anything you want to keep, then run again with `force = TRUE` to overwrite it.</span></span></code></pre></div>
+</div>
+<p>Save your changes somewhere else, then run <code>update_skill("quarto-authoring", force = TRUE)</code> to get the new version. <code><a href="../reference/install_skill.html">install_skill()</a></code> does the same check, and also stops rather than overwrite a skill folder that {ally} did not install. The <code>edited</code> column of <code><a href="../reference/installed_skills.html">installed_skills()</a></code> shows which skills have changes.</p>
+<p>Skills installed before {ally} recorded fingerprints show <code>NA</code> in the <code>edited</code> column and are not protected. Updating them once records a fingerprint from then on.</p>
+<p>To bring every skill in a project up to date at once:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">skills</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/installed_skills.html">installed_skills</a></span><span class="op">(</span>scope <span class="op">=</span> <span class="st">"project"</span><span class="op">)</span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">skill</span> <span class="kw">in</span> <span class="va">skills</span><span class="op">$</span><span class="va">name</span><span class="op">[</span><span class="va">skills</span><span class="op">$</span><span class="va">installed_by</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="st">"ally"</span><span class="op">]</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/update_skill.html">update_skill</a></span><span class="op">(</span><span class="va">skill</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
-<p>Only skills that {ally} installed know their source, so the loop skips the others.</p>
+<p>Only skills that {ally} installed know their source, so the loop skips the others. A skill with local changes stops the loop with an error, so nothing is lost.</p>
 <p>To see which skills have changed since you installed them, compare two columns of <code><a href="../reference/installed_skills.html">installed_skills()</a></code>. <code>installed</code> is when you installed or last updated a skill, and <code>updated_on_github</code> is when its folder last changed on GitHub:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">skills</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/installed_skills.html">installed_skills</a></span><span class="op">(</span>scope <span class="op">=</span> <span class="st">"project"</span><span class="op">)</span></span>
 <span><span class="va">skills</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">skills</span><span class="op">$</span><span class="va">updated_on_github</span> <span class="op">&gt;</span> <span class="va">skills</span><span class="op">$</span><span class="va">installed</span><span class="op">)</span>, <span class="op">]</span></span></code></pre></div>
 </div>
 <p>Skills installed with <code>scope = "user"</code> are updated the same way, with <code>scope = "user"</code> added to each call.</p>
 <p>If you edit a skill by hand in <code>.agents/skills/</code>, or delete the Claude Code copy by accident, <code><a href="../reference/link_skills.html">link_skills()</a></code> refreshes the copies for every installed skill without fetching anything:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/link_skills.html">link_skills</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
+<p>Make your edits in <code>.agents/skills/</code>, the copy every agent’s copy is made from. If the Claude Code copy has been edited, <code><a href="../reference/link_skills.html">link_skills()</a></code> skips that skill with a warning rather than overwrite it; pass <code>force = TRUE</code> to overwrite it anyway.</p>
 <p>Prefer a single set of files? Pass <code>link = TRUE</code> to <code><a href="../reference/install_skill.html">install_skill()</a></code>, <code><a href="../reference/update_skill.html">update_skill()</a></code>, or <code><a href="../reference/link_skills.html">link_skills()</a></code> and {ally} puts a relative symlink at <code>.claude/skills/&lt;skill&gt;</code> pointing back to the canonical copy instead of a second copy. Where symlinks are not supported (typically Windows without developer mode) it falls back to copying and tells you so.</p>
 </section><section class="level2"><h2 id="where-to-find-skills">Where to find skills<a class="anchor" aria-label="anchor" href="#where-to-find-skills"></a>
 </h2>

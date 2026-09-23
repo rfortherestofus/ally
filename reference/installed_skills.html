@@ -86,6 +86,11 @@ target the skill was installed from, such as
 zone.</p></li>
 <li><p><code>updated_on_github</code>: when the skill's folder last changed on GitHub,
 or <code>NA</code> for skills that did not come from GitHub.</p></li>
+<li><p><code>edited</code>: <code>TRUE</code> if any copy of the skill has changed since ally
+installed it, <code>FALSE</code> if none has, or <code>NA</code> when there is nothing to
+compare with: skills ally did not install, or installed before it
+recorded a fingerprint of each skill's files. <code><a href="update_skill.html">update_skill()</a></code> will not
+overwrite an edited skill without <code>force = TRUE</code>.</p></li>
 <li><p><code>scope</code>: <code>"project"</code> or <code>"user"</code>.</p></li>
 <li><p><code>found_in</code>: the folders that hold the skill, such as <code>".agents, .claude"</code>.</p></li>
 <li><p><code>path</code>: the skill's folder, preferring the <code>.agents/skills/</code> copy.</p></li>
