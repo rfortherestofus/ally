@@ -16,7 +16,10 @@ Imports:
     cli,
     fs,
     jsonlite,
-    withr
+    stats,
+    tibble,
+    withr,
+    yaml
 Suggests:
     knitr,
     pkgdown,

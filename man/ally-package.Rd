@@ -14,6 +14,7 @@ agent's expected folder.
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://rfortherestofus.github.io/ally/}
   \item \url{https://github.com/rfortherestofus/ally}
   \item Report bugs at \url{https://github.com/rfortherestofus/ally/issues}
 }

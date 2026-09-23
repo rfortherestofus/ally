@@ -21,7 +21,7 @@ link_skills <- function(scope = c("project", "user"), link = FALSE) {
     return(invisible(list()))
   }
 
-  skills <- installed_skills(scope = scope)
+  skills <- names(skill_folders(canonical_root))
   if (length(skills) == 0) {
     cli::cli_alert_info("No skills installed.")
     return(invisible(list()))
@@ -38,20 +38,4 @@ link_skills <- function(scope = c("project", "user"), link = FALSE) {
     )
   }
   invisible(results)
-}
-
-#' List installed skills
-#'
-#' @inheritParams install_skill
-#'
-#' @return Character vector of skill names found in `.agents/skills/` for the scope.
-#' @export
-installed_skills <- function(scope = c("project", "user")) {
-  scope <- match.arg(scope)
-  canonical_root <- canonical_skills_dir(skills_root(scope))
-  if (!fs::dir_exists(canonical_root)) {
-    return(character())
-  }
-  entries <- fs::dir_ls(canonical_root, type = "directory")
-  fs::path_file(entries)
 }
